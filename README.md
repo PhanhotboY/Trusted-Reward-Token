@@ -10,8 +10,16 @@
 
 - [x] Review the project structure
 
-- [ ] Grasp the project workflow
+- [x] Grasp the project workflow
 
-- [ ] Learn about the libraries used in the project
+- [x] Learn about the libraries used in the project
 
-- [ ] Project initialization
+- [x] Project initialization
+
+- [x] Implement ERC777 interface
+
+- [ ] Reward Token
+
+- [ ] Penalty Token
+
+- [ ] Reputation Token
