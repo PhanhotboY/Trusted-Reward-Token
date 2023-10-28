@@ -24,7 +24,7 @@ import "@openzeppelin/contracts/interfaces/IERC1820Registry.sol";
  * are no special restrictions in the amount of tokens that created, moved, or
  * destroyed. This makes integration with ERC20 applications seamless.
  */
-contract ModifiedERC777 is IERC777, IERC20 {
+abstract contract ModifiedERC777 is IERC777, IERC20 {
     // Type declarations
     using Math for uint256;
     using Address for address;
@@ -37,7 +37,7 @@ contract ModifiedERC777 is IERC777, IERC20 {
     string private _symbol;
     uint256 private _totalSupply;
 
-    mapping(address => uint256) _balances;
+    mapping(address => uint256) private _balances;
 
     /**
      * @dev You can check these hashes using NodeJS by:
@@ -117,7 +117,7 @@ contract ModifiedERC777 is IERC777, IERC20 {
      * - if `recipient` is a contract, it must implement the {IERC777Recipient}
      * interface.
      */
-    function send(address recipient, uint256 amount, bytes calldata data) external {
+    function send(address recipient, uint256 amount, bytes calldata data) external virtual {
         _send(msg.sender, msg.sender, recipient, amount, data, "", true);
     }
 
@@ -163,7 +163,7 @@ contract ModifiedERC777 is IERC777, IERC20 {
      *
      * - the caller must have at least `amount` tokens.
      */
-    function burn(uint256 amount, bytes calldata data) external {
+    function burn(uint256 amount, bytes calldata data) external virtual {
         _burn(msg.sender, msg.sender, amount, data, "");
     }
 
@@ -214,7 +214,7 @@ contract ModifiedERC777 is IERC777, IERC20 {
      *
      * - `operator` cannot be calling address.
      */
-    function authorizeOperator(address operator) external {
+    function authorizeOperator(address operator) external virtual {
         require(msg.sender != operator, "ERC777: Cannot authorize self as an operator");
 
         if (_defaultOperators[operator]) {
@@ -237,7 +237,7 @@ contract ModifiedERC777 is IERC777, IERC20 {
      *
      * - `operator` cannot be calling address.
      */
-    function revokeOperator(address operator) external {
+    function revokeOperator(address operator) external virtual {
         require(operator != msg.sender, "ERC777: Cannot revoke self as an operator");
 
         if (_defaultOperators[operator]) {
@@ -320,7 +320,7 @@ contract ModifiedERC777 is IERC777, IERC20 {
      * Emits a {Transfer} event.
      * See 'ERC20.transfer'.
      */
-    function transfer(address to, uint256 value) external returns (bool) {
+    function transfer(address to, uint256 value) external virtual returns (bool) {
         require(to.isNotZeroAddress(), "ERC777: Recipient cannot be zero address");
 
         address from = msg.sender;
@@ -345,7 +345,7 @@ contract ModifiedERC777 is IERC777, IERC20 {
      *
      * See 'ERC20.transferFrom'
      */
-    function transferFrom(address from, address to, uint256 value) external returns (bool) {
+    function transferFrom(address from, address to, uint256 value) external virtual returns (bool) {
         require(from.isNotZeroAddress(), "ERC20: Tokens holder cannot be zero address");
         require(to.isNotZeroAddress(), "ERC20: Tokens holder cannot be zero address");
 
@@ -396,7 +396,7 @@ contract ModifiedERC777 is IERC777, IERC20 {
      *
      * Emits an {Approval} event.
      */
-    function approve(address spender, uint256 value) external returns (bool) {
+    function approve(address spender, uint256 value) external virtual returns (bool) {
         _approve(msg.sender, spender, value);
 
         return true;
