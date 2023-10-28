@@ -8,18 +8,34 @@
 
 - [x] Learn about [ERC20](https://eips.ethereum.org/EIPS/eip-20), [ERC214](https://eips.ethereum.org/EIPS/eip-214), [ERC615](https://eips.ethereum.org/EIPS/eip-615), [ERC1820](https://eips.ethereum.org/EIPS/eip-1820), [ERC777](https://eips.ethereum.org/EIPS/eip-777), [ERC1271](https://eips.ethereum.org/EIPS/eip-1271)
 
-- [x] Review the project structure
-
-- [x] Grasp the project workflow
-
 - [x] Learn about the libraries used in the project
-
-- [x] Project initialization
 
 - [x] Implement ERC777 interface
 
-- [ ] Reward Token
+- [x] Implement Ethereum Claims Registry([ERC780](https://github.com/ethereum/EIPs/issues/780))
 
-- [ ] Penalty Token
+- [x] Implement Token Claims Issuer
 
-- [ ] Reputation Token
+- [x] Implement Ethereum DID Registry([ERC1056](https://eips.ethereum.org/EIPS/eip-1056))
+
+- [x] Transferable ERC777 Token
+
+- [x] Non-Transferable ERC777 Token
+
+- [x] Reward Token
+
+- [x] Penalty Token
+
+- [x] Reputation Token
+
+- [ ] Token Operator
+
+- [ ] Worker Registry
+
+- [ ] Work Order Registry
+
+- [ ] Trusted Execution Environment(TEE)
+
+- [ ] Backend
+
+- [ ] Frontend
