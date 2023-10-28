@@ -12,20 +12,24 @@ abstract contract TransferableERC777Token is ModifiedERC777 {
     TokenClaimsIssuer public immutable claimsIssuer;
 
     constructor(
-        string memory name,
+        string memory tokenName,
         string memory symbol,
         address[] memory defaultOperators,
         address _didRegister,
         address _claimsRegister,
         address _claimsIssuer
-    ) ModifiedERC777(name, symbol, defaultOperators) {
+    ) ModifiedERC777(tokenName, symbol, defaultOperators) {
         didRegister = EthereumDIDRegistry(_didRegister);
         claimsRegister = EthereumClaimsRegistry(_claimsRegister);
         claimsIssuer = TokenClaimsIssuer(_claimsIssuer);
     }
 
     function _memberCheck(address member) internal view returns (bool) {
-        bytes32 claim = claimsRegister.getClaim(address(claimsIssuer), member, keccak256(abi.encodePacked("membership")));
+        bytes32 claim = claimsRegister.getClaim(
+            address(claimsIssuer),
+            member,
+            keccak256(abi.encodePacked("membership"))
+        );
         return claim == keccak256(abi.encodePacked("true"));
     }
 }
