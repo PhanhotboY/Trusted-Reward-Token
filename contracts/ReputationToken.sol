@@ -1,4 +1,4 @@
-// SPDX-License-Identitifer: UNLICENSE
+// SPDX-License-Identifier: UNLICENSE
 pragma solidity ^0.8.20;
 
 import "./NonTransferableERC777Token.sol";
