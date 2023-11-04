@@ -19,7 +19,7 @@ abstract contract NonTransferableERC777Token is ModifiedERC777 {
     ) ModifiedERC777(tokenName, symbol, defaultOperators) {}
 
     // External
-    function send(address recipient, uint256 amount, bytes calldata data) external override {
+    function send(address recipient, uint256 amount, bytes memory data) public override {
         _revertOperation("send", "send", msg.sender, recipient, amount, data);
     }
 
@@ -27,7 +27,7 @@ abstract contract NonTransferableERC777Token is ModifiedERC777 {
         _revertOperation("burn", "burn", msg.sender, address(0), amount, data);
     }
 
-    function transfer(address to, uint256 value) external override returns (bool) {
+    function transfer(address to, uint256 value) public override returns (bool) {
         _revertOperation("transfer", "transfer", msg.sender, to, value, "");
     }
 
@@ -35,7 +35,7 @@ abstract contract NonTransferableERC777Token is ModifiedERC777 {
         address from,
         address to,
         uint256 value
-    ) external override returns (bool) {
+    ) public override returns (bool) {
         _revertOperation("transfer", "transferFrom", from, to, value, "");
     }
 
