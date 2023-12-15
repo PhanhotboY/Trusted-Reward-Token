@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: rewardsystem
+      POSTGRES_DB: reward-system
+    volumes:
+      - reward-system-vol:/var/lib/postgresql/data
+      # - ../ui/server/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
+    ports:
+      - 5432:5432
+
+volumes:
+  reward-system-vol:
