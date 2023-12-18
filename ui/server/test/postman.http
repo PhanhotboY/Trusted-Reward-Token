@@ -1,0 +1,27 @@
+@url=http://localhost:8080/api
+
+POST {{url}}/auth/register HTTP/1.1
+Content-Type: application/json
+
+{
+    "email": "phanhotboy@gmail.com",
+    "password": "im so hot bae",
+    "username": "PhanhotboY1",
+    "firstName": "Phan",
+    "lastName": "Hotboy",
+    "address": "0xdE837C8928a27e433041C9154031923632B86B6b"
+}
+
+### Login
+POST {{url}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "PhanhotboY",
+    "password": "im so hot bae"
+}
+
+### Logout
+POST {{url}}/auth/logout HTTP/1.1
+x-client-id: ed579b9b-2eba-4dc4-8278-faac25001765
+x-refresh-token: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlZDU3OWI5Yi0yZWJhLTRkYzQtODI3OC1mYWFjMjUwMDE3NjUiLCJpYXQiOjE3MDI4MTMzNDIsImV4cCI6MTcwMzQxODE0Mn0.H0dPtoUNdPdJWB90tzElvoZisdQnPcFIvzHwyecdJ8NcAwWA7bdFE8x1AYLBEm6Vtf9IKXBi0wr8uKTNZyLlwthOJgqyomIOCPx4lLlttLAdnm93-enZil0f84JstxO0oG9gVUaCDRcHt3qlwdK729XrDKY7ZC32yX-wB9V7Hs5t77tq-w9lk6rDvrEacnhHzR8TFqYuTueM8lA4ALXU7LHd-hoV2prr7vTWVgcqGZun_DaMliXjiePTxqJb-AfX2VVTa_f9NPohobB7R0VLgZb6XjTfnHST1dr56kDRhmO987LI4-91pMzxCG4bG3_ZnJ3_4ExcAVIIMJi54QqZGw

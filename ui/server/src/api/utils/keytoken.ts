@@ -1,20 +1,22 @@
 import jwt from "jsonwebtoken";
 import { generateKeyPairSync } from "crypto";
 
-async function generateTokenPair({
-  payload,
+import { IUserJWTPayload } from "../interfaces/user.interface";
+
+function generateTokenPair({
+  payload: { userId, email, role },
   privateKey,
   publicKey,
 }: {
-  payload: any;
+  payload: IUserJWTPayload;
   privateKey: string;
   publicKey: string;
 }) {
-  const accessToken = jwt.sign(payload, privateKey, {
+  const accessToken = jwt.sign({ userId, email, role }, privateKey, {
     algorithm: "RS256",
     expiresIn: "2 days",
   });
-  const refreshToken = jwt.sign(payload, privateKey, {
+  const refreshToken = jwt.sign({ userId, email, role }, privateKey, {
     algorithm: "RS256",
     expiresIn: "7 days",
   });
@@ -22,7 +24,7 @@ async function generateTokenPair({
   return { accessToken, refreshToken };
 }
 
-async function generateKeyPair() {
+function generateKeyPair() {
   const { publicKey, privateKey } = generateKeyPairSync("rsa", {
     modulusLength: 2048,
     publicKeyEncoding: {

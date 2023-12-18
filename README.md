@@ -28,7 +28,7 @@
 
 - [x] Reputation Token
 
-- [ ] Token Operator
+- [x] Token Operator
 
 - [ ] Worker Registry
 
@@ -37,5 +37,11 @@
 - [ ] Trusted Execution Environment(TEE)
 
 - [ ] Backend
+
+  - [x] Database models
+
+  - [x] Authentication
+
+  - [ ] Services
 
 - [ ] Frontend

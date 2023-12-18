@@ -23,6 +23,11 @@ class PostgreSQL {
         username: config.user,
         password: config.password,
         database: config.database,
+        benchmark: true,
+        logging: (query, time) => ({
+          query: query.replace("Executed (default): ", ""),
+          time: `${time}ms`,
+        }),
       });
 
       PostgreSQL.migrator = new Umzug({

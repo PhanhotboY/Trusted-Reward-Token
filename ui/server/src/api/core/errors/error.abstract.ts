@@ -9,6 +9,7 @@ export abstract class ErrorBase extends Error {
     return {
       status: this.status,
       message: this.message,
+      stack: this.stack,
       isOperation: this.isOperation,
     } as IResponseError;
   }
