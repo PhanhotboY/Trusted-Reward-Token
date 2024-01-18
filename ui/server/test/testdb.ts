@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize";
 
-const sequelize = new Sequelize("postgres://admin:rewardsystem@localhost:5432/reward-system");
+const sequelize = new Sequelize("postgres://admin:rewardsystem@localhost:5433/reward-system");
 
 async function testdb() {
   await sequelize.authenticate();

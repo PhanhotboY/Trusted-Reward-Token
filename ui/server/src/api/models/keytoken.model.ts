@@ -29,6 +29,10 @@ export class KeyTokenModel extends Model<
 
 KeyTokenModel.init(
   {
+    userId: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+    },
     refreshToken: {
       type: DataTypes.TEXT,
       allowNull: false,
@@ -55,4 +59,9 @@ KeyTokenModel.init(
   }
 );
 
-KeyTokenModel.belongsTo(UserModel, { targetKey: "id", foreignKey: "userId", as: "keytoken" });
+KeyTokenModel.belongsTo(UserModel, {
+  targetKey: "id",
+  foreignKey: "userId",
+  as: "keytoken",
+  onDelete: "CASCADE",
+});

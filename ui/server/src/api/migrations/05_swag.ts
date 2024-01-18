@@ -9,6 +9,8 @@ const up: Migration = async ({ context: queryInterface }) => {
   await queryInterface.createTable(SWAG.TABLE_NAME, SwagModel.getAttributes());
 };
 
-const down: Migration = async ({ context: queryInterface }) => {};
+const down: Migration = async ({ context: queryInterface }) => {
+  await queryInterface.dropTable(SWAG.TABLE_NAME, { force: true });
+};
 
 export { up, down };

@@ -1,0 +1,25 @@
+version: "3"
+services:
+  # backend:
+  #   build: .
+  #   ports:
+  #     - 8080:8080
+  #   volumes:
+  #     - ./src:/home/node/reward-system/src
+  #     - ./.env.server:/home/node/reward-system/.env
+  #   depends_on:
+  #     - pg-reward-system
+
+  pg-reward-system:
+    image: postgres:16-alpine
+    ports:
+      - 5433:5432
+    volumes:
+      - reward-system-vol:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=rewardsystem
+      - POSTGRES_DB=reward-system
+
+volumes:
+  reward-system-vol:

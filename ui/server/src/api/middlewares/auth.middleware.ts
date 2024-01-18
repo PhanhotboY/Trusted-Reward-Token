@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
+import { UUID } from "sequelize";
 
 import { IUserJWTPayload } from "../interfaces/user.interface";
 import { KeyTokenModel } from "../models";
-import { HEADER, ROLE } from "../constants";
+import { HEADER, USER } from "../constants";
 import {
   BadRequestError,
   ForbiddenError,
@@ -13,43 +14,52 @@ import { verifyToken } from "../helpers/jwt.helper";
 import { refreshTokenService } from "../services/auth.service";
 import { findKeyTokenByUserId } from "../services/keytoken.service";
 
-declare global {
-  namespace Express {
-    interface Request {
-      user: IUserJWTPayload;
-      keyToken: KeyTokenModel;
-      refreshToken?: string;
-    }
-  }
-}
+const uuidv4Regex = new RegExp(
+  /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i
+);
 
-async function onlyAdmin(req: Request, res: Response, next: NextFunction) {
-  if (req.user.role !== ROLE.ADMIN) {
+function onlyAdmin(req: Request, res: Response, next: NextFunction) {
+  if (req.user.role !== USER.ROLE.ADMIN) {
     throw new ForbiddenError("Permission denied!");
   }
   next();
 }
 
-async function onlyAuthUser(req: Request, res: Response, next: NextFunction) {
+function onlySecretary(req: Request, res: Response, next: NextFunction) {
+  switch (req.user.role) {
+    case USER.ROLE.ADMIN:
+    case USER.ROLE.SECRETARY:
+      next();
+      break;
+    default:
+      throw new ForbiddenError("Permission denied!");
+  }
+}
+
+function onlyAuthUser(req: Request, res: Response, next: NextFunction) {
   if (!req.user) {
     throw new ForbiddenError("Please login!");
   }
   next();
 }
 
-async function onlyMember(req: Request, res: Response, next: NextFunction) {
-  if (req.user.role !== ROLE.MEMBER) {
-    throw new ForbiddenError("Permission denied!");
+function onlyOrganization(req: Request, res: Response, next: NextFunction) {
+  switch (req.user.role) {
+    case USER.ROLE.ADMIN:
+    case USER.ROLE.ORGANIZATION:
+      next();
+      break;
+    default:
+      throw new ForbiddenError("Permission denied!");
   }
-  next();
 }
 
 async function authentication(req: Request, res: Response, next: NextFunction) {
-  const clientId = req.headers[HEADER.CLIENT_ID];
-  const refreshToken = req.headers[HEADER.REFRESH_TOKEN];
-  const accessToken = req.headers[HEADER.AUTHORIZATION];
+  const clientId = <string | undefined>req.headers[HEADER.CLIENT_ID];
+  const refreshToken = <string | undefined>req.headers[HEADER.REFRESH_TOKEN];
+  const accessToken = <string | undefined>req.headers[HEADER.AUTHORIZATION];
 
-  if (!clientId) {
+  if (!clientId || !uuidv4Regex.test(clientId)) {
     throw new BadRequestError("Invalid request!");
   }
 
@@ -60,7 +70,6 @@ async function authentication(req: Request, res: Response, next: NextFunction) {
 
   if (accessToken) {
     const user = verifyToken<IUserJWTPayload>(<string>accessToken, keyToken.publicKey);
-
     if (user.userId !== clientId) {
       throw new BadRequestError("Invalid token!");
     }
@@ -89,4 +98,4 @@ async function authentication(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
-export { onlyAdmin, onlyAuthUser, onlyMember, authentication };
+export { onlyAdmin, onlySecretary, onlyAuthUser, onlyOrganization, authentication };

@@ -13,6 +13,9 @@ build/
 .env.test.local
 .env.production.local
 
+# Ignore git files
+.git
+
 # Ignore logs
 logs/
 

@@ -28,17 +28,21 @@ export class BalanceModel extends Model<
 
 BalanceModel.init(
   {
+    userId: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+    },
     rewardToken: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      defaultValue: 0,
     },
     penaltyToken: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      defaultValue: 0,
     },
     reputationToken: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      defaultValue: 0,
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
@@ -49,5 +53,3 @@ BalanceModel.init(
     tableName: BALANCE.TABLE_NAME,
   }
 );
-
-BalanceModel.belongsTo(UserModel, { targetKey: "id", foreignKey: "userId", as: "balance" });

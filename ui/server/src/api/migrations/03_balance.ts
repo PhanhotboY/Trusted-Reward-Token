@@ -9,6 +9,8 @@ const up: Migration = async ({ context: queryInterface }) => {
   await queryInterface.createTable(BALANCE.TABLE_NAME, BalanceModel.getAttributes());
 };
 
-const down: Migration = async ({ context: queryInterface }) => {};
+const down: Migration = async ({ context: queryInterface }) => {
+  await queryInterface.dropTable(BALANCE.TABLE_NAME, { force: true });
+};
 
 export { up, down };

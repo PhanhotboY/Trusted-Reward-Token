@@ -1,22 +1,23 @@
 import bcrypt from "bcrypt";
 
-import { createUser, findUserByEmail, findUserByOptionalAttributes } from "./user.service";
 import { BadRequestError, ForbiddenError, InternalServerError } from "../core/errors";
 import { generateKeyPair, generateTokenPair } from "../utils/keytoken";
 import {
-  createKeyToken,
-  deleteKeyTokenByUserId,
-  updateRefreshTokensUsed,
-} from "./keytoken.service";
-import {
   IUserAttributes,
+  IUserResponse,
   IUserCreationAttributes,
   IUserJWTPayload,
 } from "../interfaces/user.interface";
-import { getReturnData } from "../utils";
-import { ROLE } from "../constants";
-import { getAddress } from "ethers";
-import { KeyTokenModel, UserModel } from "../models";
+import { Unionize, getReturnData } from "../utils";
+import { KeyTokenModel } from "../models";
+import {
+  findUserBy,
+  UserService,
+  createKeyToken,
+  deleteKeyTokenByUserId,
+  updateRefreshTokensUsed,
+} from "./";
+import { USER } from "../constants";
 
 const userReturnFields: Array<keyof IUserAttributes> = [
   "id",
@@ -39,8 +40,7 @@ async function loginService({
   password: string;
   refreshToken?: string;
 }) {
-  const foundUser = await findUserByOptionalAttributes({ email, username });
-
+  const foundUser = await findUserBy({ email, username }, true, true);
   if (!foundUser) {
     throw new BadRequestError("Not registered!");
   }
@@ -53,7 +53,7 @@ async function loginService({
 
   const { privateKey, publicKey } = generateKeyPair();
   const tokens = generateTokenPair({
-    payload: { ...foundUser, userId: foundUser.id },
+    payload: { userId: foundUser.id, email: foundUser.email, role: foundUser.role },
     privateKey,
     publicKey,
   });
@@ -66,31 +66,24 @@ async function loginService({
     refreshTokensUsed: refreshToken ? [refreshToken] : [],
   });
 
-  return { user: getReturnData(foundUser, { fields: userReturnFields }), tokens };
+  return {
+    user: getReturnData<IUserAttributes, IUserResponse>(foundUser, { fields: userReturnFields }),
+    tokens,
+  };
 }
 
-async function registerService(registerData: IUserCreationAttributes) {
-  const foundUser = await findUserByOptionalAttributes({
-    email: registerData.email,
-    username: registerData.username,
-  });
-
-  if (foundUser) {
-    if (foundUser.email === registerData.email)
-      throw new BadRequestError("Email already registered!");
-    if (foundUser.username === registerData.username)
-      throw new BadRequestError("Username already existed!");
-  }
-
+async function registerService(
+  registerData: IUserCreationAttributes,
+  role: Unionize<typeof USER.ROLE> = USER.ROLE.EMPLOYEE
+) {
   const salt = bcrypt.genSaltSync();
   const hashedPwd = bcrypt.hashSync(registerData.password, salt);
-  const user = await createUser({
+  const user = await UserService.registerUser({
     ...registerData,
-    role: ROLE.EMPLOYEE,
-    address: getAddress(registerData.address),
-    id: undefined,
+    role,
+    isVerified: true,
+    orgId: null,
     password: hashedPwd,
-    salt,
   });
 
   if (!user) {
@@ -99,7 +92,7 @@ async function registerService(registerData: IUserCreationAttributes) {
 
   const { privateKey, publicKey } = generateKeyPair();
   const tokens = generateTokenPair({
-    payload: { ...user, userId: user.id },
+    payload: { userId: user.id, email: user.email, role: user.role },
     privateKey,
     publicKey,
   });
@@ -110,7 +103,10 @@ async function registerService(registerData: IUserCreationAttributes) {
     privateKey,
   });
 
-  return { user: getReturnData(user, { fields: userReturnFields }), tokens };
+  return {
+    user: getReturnData<IUserAttributes, IUserResponse>(user, { fields: userReturnFields }),
+    tokens,
+  };
 }
 
 async function logoutService(userId: string) {
@@ -122,6 +118,7 @@ async function refreshTokenService(
   keyToken: KeyTokenModel,
   refreshToken: string
 ) {
+  console.log(keyToken.refreshTokensUsed, refreshToken);
   if (keyToken.refreshTokensUsed.includes(refreshToken)) {
     await deleteKeyTokenByUserId(user.userId);
     throw new ForbiddenError("Something went wrong. Login again!");

@@ -1,16 +1,23 @@
 import { Router } from "express";
 
-import employeeRouter from "./employee.router";
-import secretaryRouter from "./secretary.router";
-import adminRouter from "./admin.router";
+import userRouter from "./user.router";
+import swagRouter from "./swag.router";
+import requestRouter from "./request.router";
+import balanceRouter from "./balance.router";
+import reasonRouter from "./reason.router";
 import authRouter from "./auth.router";
+import organizationRouter from "./organization.router";
+import { authentication } from "../middlewares/auth.middleware";
 
 const router = Router();
+router.use("/v1/auth", authRouter);
 
-router.use("/auth", authRouter);
-
-router.use("/admin", adminRouter);
-router.use("/member", secretaryRouter);
-router.use("/employee", employeeRouter);
+router.use("/v1/swags", swagRouter);
+router.use("/v1/users", userRouter);
+router.use("/v1/reasons", reasonRouter);
+router.use("/v1/requests", requestRouter);
+router.use("/v1/balances", balanceRouter);
+router.use("/v1/request-reasons", reasonRouter);
+router.use("/v1/organizations", organizationRouter);
 
 export default router;

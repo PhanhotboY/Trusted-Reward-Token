@@ -9,6 +9,8 @@ const up: Migration = async ({ context: queryInterface }) => {
   await queryInterface.createTable(KEYTOKEN.TABLE_NAME, KeyTokenModel.getAttributes());
 };
 
-const down: Migration = async ({ context: queryInterface }) => {};
+const down: Migration = async ({ context: queryInterface }) => {
+  await queryInterface.dropTable(KEYTOKEN.TABLE_NAME, { force: true });
+};
 
 export { up, down };

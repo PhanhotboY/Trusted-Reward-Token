@@ -2,7 +2,7 @@ import { Op } from "sequelize";
 import { KeyTokenModel } from "../models";
 import { IKeyTokenCreationAttributes } from "../interfaces/keytoken.interface";
 
-async function createKeyToken({
+export async function createKeyToken({
   userId,
   privateKey,
   publicKey,
@@ -29,36 +29,39 @@ async function createKeyToken({
   });
 }
 
-async function findKeyTokenByUserId(userId: string) {
+export async function findKeyTokenByUserId(userId: string) {
   return KeyTokenModel.findOne({ where: { userId } });
 }
 
-async function findKeyTokenByRefreshToken(refreshToken: string) {
+export async function findKeyTokenByRefreshToken(refreshToken: string) {
   return KeyTokenModel.findOne({ where: { refreshToken } });
 }
 
-async function findKeyTokenByRefreshTokenUsed(refreshTokenUsed: string) {
+export async function findKeyTokenByRefreshTokenUsed(refreshTokenUsed: string) {
   return KeyTokenModel.findOne({
     where: { refreshTokensUsed: { [Op.contains]: [refreshTokenUsed] } },
   });
 }
 
-async function updateKeyToken(keyToken: KeyTokenModel, values: IKeyTokenCreationAttributes) {
+export async function updateKeyToken(keyToken: KeyTokenModel, values: IKeyTokenCreationAttributes) {
   return keyToken.update(values);
 }
 
-async function updateRefreshTokensUsed(foundKeyToken: KeyTokenModel, newRefreshToken: string) {
+export async function updateRefreshTokensUsed(
+  foundKeyToken: KeyTokenModel,
+  newRefreshToken: string
+) {
   return foundKeyToken.update({
     refreshToken: newRefreshToken,
     refreshTokensUsed: [...foundKeyToken?.refreshTokensUsed, foundKeyToken?.refreshToken],
   });
 }
 
-async function deleteKeyTokenByUserId(userId: string) {
+export async function deleteKeyTokenByUserId(userId: string) {
   return KeyTokenModel.destroy({ where: { userId } });
 }
 
-export {
+export const KeyTokenService = {
   createKeyToken,
   findKeyTokenByUserId,
   findKeyTokenByRefreshToken,

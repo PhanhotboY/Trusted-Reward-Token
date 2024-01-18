@@ -12,13 +12,14 @@ function generateTokenPair({
   privateKey: string;
   publicKey: string;
 }) {
+  console.log("jwt payload", { userId, email, role });
   const accessToken = jwt.sign({ userId, email, role }, privateKey, {
     algorithm: "RS256",
-    expiresIn: "2 days",
+    expiresIn: "1 days",
   });
   const refreshToken = jwt.sign({ userId, email, role }, privateKey, {
     algorithm: "RS256",
-    expiresIn: "7 days",
+    expiresIn: "3 days",
   });
 
   return { accessToken, refreshToken };

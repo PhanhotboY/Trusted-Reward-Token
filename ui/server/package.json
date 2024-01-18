@@ -4,7 +4,7 @@
   "main": "server.ts",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node-dev --respawn --trace-warnings -- server.ts",
+    "dev": "ts-node-dev --respawn --trace-warnings --watch src server.ts",
     "build": "tsc",
     "start": "node ./dist/server.js",
     "test": "jest --watchAll --runInBand --detectOpenHandles",

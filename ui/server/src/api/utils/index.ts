@@ -1,25 +1,29 @@
 import _ from "lodash";
+import { Model } from "sequelize";
 
 // export * from './database';
 export * from "./keytoken";
+export * from "./interface";
 
-type TFilter = Partial<Record<"fields" | "excludes", string[]>>;
+type TFilter<T> = Partial<Record<"fields" | "excludes", Array<keyof T>>>;
 
-function getReturnData(tuple: Object, filter?: TFilter) {
-  const picked = _.isEmpty(filter?.fields || []) ? tuple : _.pick(tuple, filter?.fields!);
-  return _.omit(picked as Object, filter?.excludes || []) as Object;
+function getReturnData<T, R = T>(tuple: T, filter?: TFilter<T>): R {
+  const plainTuple = tuple instanceof Model ? tuple.toJSON<T>() : tuple;
+
+  const picked = _.isEmpty(filter?.fields || []) ? plainTuple : _.pick(plainTuple, filter?.fields!);
+  return <R>_.omit(picked, filter?.excludes || []);
 }
 
-function getReturnArray(tupleArr: Array<Object>, filter?: TFilter): Object {
-  return tupleArr.map((tup) => {
+function getReturnArray<T, R = T>(tupleArr: Array<T>, filter?: TFilter<T>): Array<R> {
+  return <Array<R>>tupleArr.map((tup) => {
     if (Array.isArray(tup)) return getReturnArray(tup, filter);
-    return getReturnData(tup, filter);
+    return getReturnData<T, R>(tup, filter);
   });
 }
 
 const isNullish = (val: any) => (val ?? null) === null;
 const isEmptyObj = (obj: Object) => !Object.keys(obj).length;
-const getSkipNumber = (limit: number, page: number) => limit * (page - 1);
+const caculateOffset = (page: number, limit: number) => limit * page || 0;
 const isObj = (obj: any) => obj instanceof Object && !Array.isArray(obj);
 const capitalizeFirstLetter = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -61,4 +65,20 @@ const removeNestedNullish = <T>(any: any): T => {
   return <T>any;
 };
 
-export { getReturnArray, getReturnData, removeNestedNullish };
+const pickWithNullish = <T extends Object>(obj: T, keys: Array<keyof T>) => {
+  const picked = _.pickBy(
+    obj,
+    (val, key) => keys.includes(<keyof T>key) && (isNullish(val) || val)
+  );
+  return picked;
+};
+
+export {
+  getReturnArray,
+  getReturnData,
+  removeNestedNullish,
+  caculateOffset,
+  isObj,
+  capitalizeFirstLetter,
+  pickWithNullish,
+};
