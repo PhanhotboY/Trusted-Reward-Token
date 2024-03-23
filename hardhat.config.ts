@@ -16,25 +16,42 @@ const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   networks: {
     sepolia: {
-      accounts: [
-        process.env.ADMIN_PRIVATE_KEY as string,
-        process.env.DEPLOYER_PRIVATE_KEY as string,
-      ],
+      accounts: {
+        mnemonic: process.env.MNEMONIC,
+        initialIndex: 0,
+        accountsBalance: "1000000000000000000000000",
+        path: "m/44'/60'/0'/0",
+      },
       chainId: 11155111,
       url: process.env.SEPOLIA_URL,
     },
     hardhat: {
       allowUnlimitedContractSize: true,
+      accounts: {
+        mnemonic: process.env.MNEMONIC,
+        initialIndex: 0,
+        count: 200,
+      },
+    },
+    ganache: {
+      url: process.env.GANACHE_URL,
+      chainId: 1337,
+      allowUnlimitedContractSize: true,
+      // blockGasLimit: 3e9,
+
+      timeout: 600000,
     },
   },
   namedAccounts: {
     deployer: {
       sepolia: 0,
       hardhat: 0,
+      ganache: 1,
     },
     admin: {
       sepolia: 0,
-      hardhat: 1,
+      hardhat: 0,
+      ganache: 0,
     },
   },
   gasReporter: {

@@ -1,18 +1,22 @@
 import { DeployFunction } from "hardhat-deploy/dist/types";
 
-const penaltyTokenDeployFunc: DeployFunction = async ({deployments, getNamedAccounts}) => {
-    const {deployer} = await getNamedAccounts();
+const penaltyTokenDeployFunc: DeployFunction = async ({
+  deployments,
+  getNamedAccounts,
+  ethers,
+}) => {
+  const { deployer } = await getNamedAccounts();
 
-    const tokenOperator = await deployments.get('TokenOperator');
+  const tokenOperator = await deployments.get("TokenOperator");
 
-    await deployments.deploy('PenaltyToken', {
-        from: deployer,
-        args: [[deployer, tokenOperator.address]],
-        log: true,
-        autoMine: true,
-        gasLimit: 3e7
-    })
-}
+  await deployments.deploy("PenaltyToken", {
+    from: deployer,
+    args: [[tokenOperator.address]],
+    log: true,
+    autoMine: true,
+    gasLimit: 6721975,
+  });
+};
 
 export default penaltyTokenDeployFunc;
-penaltyTokenDeployFunc.tags = ['all', 'token', 'penaltyToken'];
+penaltyTokenDeployFunc.tags = ["all", "token", "penaltyToken"];
