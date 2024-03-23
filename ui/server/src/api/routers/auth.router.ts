@@ -6,9 +6,8 @@ import { authentication } from "../middlewares/auth.middleware";
 const authRouter = express.Router();
 
 authRouter.post("/login", authController.login);
-authRouter.post("/register", authController.register);
-authRouter.post("/admin/register", authController.registerAdmin);
-authRouter.post("/secretary/register", authController.registerSecretary);
+// register admin
+authRouter.post("/register", authController.registerAdmin);
 
 authRouter.use(authentication);
 

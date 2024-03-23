@@ -3,7 +3,7 @@ export const REASON = {
   MODEL_NAME: "Reason",
 };
 
-export const REGISTER_REASON = {
-  TABLE_NAME: "register_reasons",
-  MODEL_NAME: "RegisterReason",
+export const SUBSCRIPTION = {
+  TABLE_NAME: "subscriptions",
+  MODEL_NAME: "Subscription",
 };

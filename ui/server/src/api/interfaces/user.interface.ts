@@ -15,21 +15,10 @@ export interface IUserJWTPayload {
   role: IUserAttributes["role"];
 }
 
-export interface IUserUniqueAttributes
-  extends Pick<IUserAttributes, "id" | "email" | "username" | "address"> {}
+export interface IUserUniqueAttributes extends Pick<IUserAttributes, "id" | "email" | "username"> {}
 
 export interface IUserResponse
   extends Pick<
     IUserDetails,
-    | "id"
-    | "username"
-    | "firstName"
-    | "lastName"
-    | "address"
-    | "email"
-    | "phone"
-    | "role"
-    | "orgId"
-    | "title"
-    | "balance"
+    "id" | "username" | "fullName" | "email" | "role" | "orgId" | "balance" | "createdAt"
   > {}

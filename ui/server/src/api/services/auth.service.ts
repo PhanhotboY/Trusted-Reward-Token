@@ -3,10 +3,10 @@ import bcrypt from "bcrypt";
 import { BadRequestError, ForbiddenError, InternalServerError } from "../core/errors";
 import { generateKeyPair, generateTokenPair } from "../utils/keytoken";
 import {
-  IUserAttributes,
   IUserResponse,
   IUserCreationAttributes,
   IUserJWTPayload,
+  IUserDetails,
 } from "../interfaces/user.interface";
 import { Unionize, getReturnData } from "../utils";
 import { KeyTokenModel } from "../models";
@@ -14,19 +14,20 @@ import {
   findUserBy,
   UserService,
   createKeyToken,
+  getUserDetails,
   deleteKeyTokenByUserId,
   updateRefreshTokensUsed,
 } from "./";
 import { USER } from "../constants";
 
-const userReturnFields: Array<keyof IUserAttributes> = [
+const userReturnFields: Array<keyof IUserDetails> = [
   "id",
-  "username",
-  "firstName",
-  "lastName",
-  "address",
   "email",
+  "username",
+  "fullName",
+  "role",
   "orgId",
+  "balance",
 ];
 
 async function loginService({
@@ -67,7 +68,7 @@ async function loginService({
   });
 
   return {
-    user: getReturnData<IUserAttributes, IUserResponse>(foundUser, { fields: userReturnFields }),
+    user: getReturnData<IUserDetails, IUserResponse>(foundUser, { fields: userReturnFields }),
     tokens,
   };
 }
@@ -78,13 +79,14 @@ async function registerService(
 ) {
   const salt = bcrypt.genSaltSync();
   const hashedPwd = bcrypt.hashSync(registerData.password, salt);
-  const user = await UserService.registerUser({
+  const { id: userId } = await UserService.registerUser({
     ...registerData,
     role,
     isVerified: true,
     orgId: null,
     password: hashedPwd,
   });
+  const user = await getUserDetails(userId);
 
   if (!user) {
     throw new InternalServerError("Fail to create new user!");
@@ -104,7 +106,7 @@ async function registerService(
   });
 
   return {
-    user: getReturnData<IUserAttributes, IUserResponse>(user, { fields: userReturnFields }),
+    user: getReturnData<IUserDetails, IUserResponse>(user, { fields: userReturnFields }),
     tokens,
   };
 }

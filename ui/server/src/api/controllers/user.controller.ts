@@ -27,7 +27,7 @@ async function getBalance(req: Request, res: Response) {
   });
 }
 // userRouter.get("me", userController.getEmployeeDetail);
-async function getEmployeeDetail(req: Request, res: Response) {
+async function getUserDetailSelf(req: Request, res: Response) {
   return OK({
     res,
     message: "Get user detail successfully!",
@@ -64,7 +64,7 @@ async function getEmployee(req: Request, res: Response) {
 }
 
 // userRouter.put("me", userController.updateEmployee);
-async function updateEmployee(req: Request, res: Response) {
+async function updateUserSelf(req: Request, res: Response) {
   return OK({
     res,
     message: "Update user successfully!",
@@ -86,7 +86,7 @@ async function updateEmployee(req: Request, res: Response) {
   });
 }
 // userRouter.patch("me", userController.patchEmployee);
-async function patchEmployee(req: Request, res: Response) {
+async function patchUser(req: Request, res: Response) {
   res.send("patchEmployee");
 }
 
@@ -115,9 +115,9 @@ async function deleteEmployee(req: Request, res: Response) {
 
 export const userController = {
   getBalance,
-  getEmployeeDetail,
+  getUserDetailSelf,
   getEmployee,
-  updateEmployee,
-  patchEmployee,
+  updateUserSelf,
+  patchUser,
   deleteEmployee,
 };

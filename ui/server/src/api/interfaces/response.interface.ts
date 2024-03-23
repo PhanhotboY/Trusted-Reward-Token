@@ -1,6 +1,7 @@
 import { Response } from "express";
 
 interface ISuccessReponse {
+  status?: number;
   message: string;
   metadata: Object | string;
   options?: Object;

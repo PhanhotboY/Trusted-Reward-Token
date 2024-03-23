@@ -1,13 +1,15 @@
 import app from "./src/app";
 import { pgInstance } from "./src/db/init.postgresql";
+import { provider } from "./src/db/init.jsonRpcProvider";
 
 const port = process.env.PORT || 8080;
 
 const server = app.listen(port, async () => {
-  console.log(`Server listening on port ${port}: ${process.env.API_URL}`);
   await pgInstance.connect();
   const sequelize = pgInstance.getSequelize();
   await sequelize.sync();
+  console.log("block number:::::::", await provider.getBlockNumber());
+  console.log(`Server listening on port ${port}: ${process.env.API_URL}`);
 });
 
 process.on("SIGINT", () => cleanup("SIGINT"));
