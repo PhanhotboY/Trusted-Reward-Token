@@ -8,5 +8,8 @@ typechain-types
 # Hardhat files
 cache
 artifacts
+deployments
 
 .vscode
+yarn-error.log
+yarn.lock

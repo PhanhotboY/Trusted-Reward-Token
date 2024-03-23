@@ -9,7 +9,6 @@ import "./ReputationToken.sol";
 import "./TokenClaimsIssuer.sol";
 import "./EthereumDIDRegistry.sol";
 import "./EthereumClaimsRegistry.sol";
-import "./Lock.sol";
 
 contract TokenOperator is Ownable {
     RewardToken public rewardToken;
@@ -33,13 +32,13 @@ contract TokenOperator is Ownable {
     event BatchMintError(address organization, address account, uint256 amount);
 
     constructor(
-        address _claimsIssuer,
         address _didRegistry,
-        address _claimsRegistry
+        address _claimsRegistry,
+        address _claimsIssuer
     ) Ownable(msg.sender) {
-        claimsIssuer = TokenClaimsIssuer(_claimsIssuer);
         didRegistry = EthereumDIDRegistry(_didRegistry);
         claimsRegistry = EthereumClaimsRegistry(_claimsRegistry);
+        claimsIssuer = TokenClaimsIssuer(_claimsIssuer);
     }
 
     // External
@@ -76,27 +75,28 @@ contract TokenOperator is Ownable {
         uint256[] calldata _amounts
     ) external onlyOwner {
         uint256 orgLength = _organizations.length;
-        require(orgLength == _accounts.length && orgLength == _amounts.length, "Error: Mismatched argument length");
+        require(
+            orgLength == _accounts.length && orgLength == _amounts.length,
+            "Error: Mismatched argument length"
+        );
 
         address[] calldata organizations = _organizations;
         address[] calldata accounts = _accounts;
         uint256[] calldata amounts = _amounts;
 
-        for(uint256 i = 0; i < orgLength; i++) {
+        for (uint256 i = 0; i < orgLength; i++) {
             address org = organizations[i];
             address acc = accounts[i];
             uint256 amount = amounts[i];
 
-            if(_memberCheck(org)) {
-                if(_employeeCheck(org, acc)) {
-                    mintPenalties(org, acc, amount, '');
-                }
-                else {
+            if (_memberCheck(org)) {
+                if (_employeeCheck(org, acc)) {
+                    mintPenalties(org, acc, amount, "");
+                } else {
                     emit EmployeeNotRegistered(org, acc);
                     emit BatchMintError(org, acc, amount);
                 }
-            }
-            else {
+            } else {
                 emit OrganizationNotMember(org);
                 emit BatchMintError(org, acc, amount);
             }
@@ -105,31 +105,32 @@ contract TokenOperator is Ownable {
 
     function batchMintReward(
         address[] calldata _organizations,
-        address[] calldata _accounts, 
+        address[] calldata _accounts,
         uint256[] calldata _amounts
     ) external onlyOwner {
         uint256 orgLength = _organizations.length;
-        require(orgLength == _accounts.length && orgLength == _amounts.length, "Error: Mismatched argument length");
+        require(
+            orgLength == _accounts.length && orgLength == _amounts.length,
+            "Error: Mismatched argument length"
+        );
 
         address[] calldata organizations = _organizations;
         address[] calldata accounts = _accounts;
         uint256[] calldata amounts = _amounts;
 
-        for(uint256 i = 0; i < orgLength; i++) {
+        for (uint256 i = 0; i < orgLength; i++) {
             address org = organizations[i];
             address acc = accounts[i];
             uint256 amount = amounts[i];
 
-            if(_memberCheck(org)) {
-                if(_employeeCheck(org, acc)) {
-                    mintReward(org, acc, amount, '');
-                }
-                else {
+            if (_memberCheck(org)) {
+                if (_employeeCheck(org, acc)) {
+                    mintRewards(org, acc, amount, "");
+                } else {
                     emit EmployeeNotRegistered(org, acc);
                     emit BatchMintError(org, acc, amount);
                 }
-            }
-            else {
+            } else {
                 emit OrganizationNotMember(org);
                 emit BatchMintError(org, acc, amount);
             }
@@ -185,7 +186,7 @@ contract TokenOperator is Ownable {
         emit ReputationBurned(account, amount, operatorData);
     }
 
-    function mintReward(
+    function mintRewards(
         address organization,
         address account,
         uint256 amount,
@@ -204,13 +205,22 @@ contract TokenOperator is Ownable {
     }
 
     // Private
-    function _memberCheck(address organization) private view returns (bool){
-        bytes32 isMember = claimsRegistry.getClaim(address(claimsIssuer), organization, keccak256(abi.encodePacked("membership")));
+    function _memberCheck(address organization) private view returns (bool) {
+        bytes32 isMember = claimsRegistry.getClaim(
+            address(claimsIssuer),
+            organization,
+            keccak256(abi.encodePacked("membership"))
+        );
 
         return isMember == keccak256(abi.encodePacked("membership"));
     }
 
     function _employeeCheck(address organization, address account) private view returns (bool) {
-        return didRegistry.validDelegate(organization, keccak256(abi.encodePacked('employee')), account);
+        return
+            didRegistry.validDelegate(
+                organization,
+                keccak256(abi.encodePacked("employee")),
+                account
+            );
     }
 }
