@@ -25,17 +25,6 @@ function onlyAdmin(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
-function onlySecretary(req: Request, res: Response, next: NextFunction) {
-  switch (req.user.role) {
-    case USER.ROLE.ADMIN:
-    case USER.ROLE.SECRETARY:
-      next();
-      break;
-    default:
-      throw new ForbiddenError("Permission denied!");
-  }
-}
-
 function onlyAuthUser(req: Request, res: Response, next: NextFunction) {
   if (!req.user) {
     throw new ForbiddenError("Please login!");
@@ -43,10 +32,10 @@ function onlyAuthUser(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
-function onlyOrganization(req: Request, res: Response, next: NextFunction) {
+function onlyMember(req: Request, res: Response, next: NextFunction) {
   switch (req.user.role) {
     case USER.ROLE.ADMIN:
-    case USER.ROLE.ORGANIZATION:
+    case USER.ROLE.MEMBER:
       next();
       break;
     default:
@@ -69,21 +58,24 @@ async function authentication(req: Request, res: Response, next: NextFunction) {
   }
 
   if (accessToken) {
-    const user = verifyToken<IUserJWTPayload>(<string>accessToken, keyToken.publicKey);
+    const user = verifyToken<IUserJWTPayload>(
+      accessToken.replace("Bearer ", ""),
+      keyToken.publicKey
+    );
     if (user.userId !== clientId) {
       throw new BadRequestError("Invalid token!");
     }
 
     req.user = user;
   } else if (refreshToken) {
-    const user = verifyToken<IUserJWTPayload>(<string>refreshToken, keyToken.publicKey);
+    const user = verifyToken<IUserJWTPayload>(refreshToken, keyToken.publicKey);
 
     if (user.userId !== clientId) {
       throw new BadRequestError("Invalid token!");
     }
 
-    req.refreshToken = <string>refreshToken;
-    await refreshTokenService(user, keyToken, <string>refreshToken);
+    req.refreshToken = refreshToken;
+    await refreshTokenService(user, keyToken, refreshToken);
     const newKeyToken = await findKeyTokenByUserId(user.userId);
     if (!newKeyToken) throw new InternalServerError("Something went wrong. Please login again!");
 
@@ -98,4 +90,4 @@ async function authentication(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
-export { onlyAdmin, onlySecretary, onlyAuthUser, onlyOrganization, authentication };
+export { onlyAdmin, onlyAuthUser, onlyMember, authentication };

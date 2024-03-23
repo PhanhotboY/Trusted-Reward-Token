@@ -12,6 +12,7 @@ import { REQUEST } from "../constants";
 import { SwagModel } from "./swag.model";
 import { UserModel } from "./user.model";
 import { pgInstance } from "../../db/init.postgresql";
+import { ReasonModel } from "./reason.model";
 
 const sequelize = pgInstance.getSequelize();
 
@@ -20,11 +21,13 @@ export class RequestModel extends Model<
   InferCreationAttributes<RequestModel>
 > {
   declare id: CreationOptional<string>;
-  declare orgId: ForeignKey<UserModel["id"]>;
+  declare requesterId: ForeignKey<UserModel["id"]>;
   declare swagId: ForeignKey<SwagModel["id"]> | null;
   declare receiverId: ForeignKey<UserModel["id"]> | null;
+  declare reasonId: ForeignKey<ReasonModel["id"]> | null;
   declare amount: number | null;
   declare type: Unionize<typeof REQUEST.TYPE>;
+  declare message: string | null;
   declare status: Unionize<typeof REQUEST.STATUS>;
   declare completedAt: Date | null;
 
@@ -55,6 +58,12 @@ RequestModel.init(
     swagId: {
       type: DataTypes.UUID,
     },
+    reasonId: {
+      type: DataTypes.UUID,
+    },
+    message: {
+      type: DataTypes.TEXT,
+    },
     status: {
       type: DataTypes.ENUM(...Object.values(REQUEST.STATUS)),
       defaultValue: REQUEST.STATUS.PENDING,
@@ -64,6 +73,14 @@ RequestModel.init(
   },
   {
     sequelize,
+    indexes: [
+      {
+        fields: ["requesterId"],
+      },
+      {
+        fields: ["type", "status"],
+      },
+    ],
     modelName: REQUEST.MODEL_NAME,
     tableName: REQUEST.TABLE_NAME,
   }
@@ -71,9 +88,14 @@ RequestModel.init(
 
 RequestModel.belongsTo(UserModel, {
   targetKey: "id",
-  foreignKey: "orgId",
+  foreignKey: "requesterId",
   as: "requester",
   onDelete: "CASCADE",
 });
 RequestModel.belongsTo(UserModel, { targetKey: "id", foreignKey: "receiverId", as: "receiver" });
-RequestModel.belongsTo(SwagModel, { targetKey: "id", foreignKey: "swagId", as: "requestSwag" });
+RequestModel.belongsTo(SwagModel, { targetKey: "id", foreignKey: "swagId", as: "swag" });
+RequestModel.belongsTo(ReasonModel, {
+  targetKey: "id",
+  foreignKey: "reasonId",
+  as: "reason",
+});

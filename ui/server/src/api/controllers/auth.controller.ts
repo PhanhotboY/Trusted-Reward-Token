@@ -6,9 +6,8 @@ import {
   registerService,
   refreshTokenService,
 } from "../services/auth.service";
-import { OK } from "../core/success.response";
+import { CREATED, OK } from "../core/success.response";
 import { USER } from "../constants";
-import { ZeroAddress } from "ethers";
 
 const API_PATH = process.env.API_PATH;
 
@@ -27,29 +26,10 @@ async function login(req: Request, res: Response) {
   });
 }
 
-async function register(req: Request, res: Response) {
-  return OK({
-    res,
-    metadata: await registerService(req.body),
-    link: {
-      self: { href: req.originalUrl, method: "POST" },
-      login: {
-        href: `${API_PATH}/auth/login`,
-        method: "POST",
-      },
-      logout: {
-        href: `${API_PATH}/auth/logout`,
-        method: "POST",
-      },
-    },
-    message: "Register successfully!",
-  });
-}
-
 async function registerAdmin(req: Request, res: Response) {
-  return OK({
+  return CREATED({
     res,
-    metadata: await registerService({ ...req.body, address: ZeroAddress }, USER.ROLE.ADMIN),
+    metadata: await registerService(req.body, USER.ROLE.ADMIN),
     link: {
       self: { href: req.originalUrl, method: "POST" },
       login: {
@@ -65,16 +45,29 @@ async function registerAdmin(req: Request, res: Response) {
   });
 }
 
-async function registerSecretary(req: Request, res: Response) {
-  return OK({
+async function registerMember(req: Request, res: Response) {
+  return CREATED({
     res,
-    metadata: await registerService(
-      {
-        ...req.body,
-        address: ZeroAddress,
+    metadata: await registerService(req.body, USER.ROLE.MEMBER),
+    link: {
+      self: { href: req.originalUrl, method: "POST" },
+      login: {
+        href: `${API_PATH}/auth/login`,
+        method: "POST",
       },
-      USER.ROLE.SECRETARY
-    ),
+      logout: {
+        href: `${API_PATH}/auth/logout`,
+        method: "POST",
+      },
+    },
+    message: "Register successfully!",
+  });
+}
+
+async function registerEmployee(req: Request, res: Response) {
+  return CREATED({
+    res,
+    metadata: await registerService(req.body, USER.ROLE.EMPLOYEE),
     link: {
       self: { href: req.originalUrl, method: "POST" },
       login: {
@@ -117,8 +110,8 @@ async function refreshToken(req: Request, res: Response) {
 export const authController = {
   logout,
   login,
-  register,
   refreshToken,
   registerAdmin,
-  registerSecretary,
+  registerMember,
+  registerEmployee,
 };

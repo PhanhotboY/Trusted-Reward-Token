@@ -9,7 +9,7 @@ export interface IQueryOptions {
   exclude?: string[];
   /**
    * @description
-   * Only for retrieve organization
+   * Only for retrieve organizations
    * If true, join the organization table to the user query
    */
   includeOrganization?: boolean;

@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { Transaction, WhereOptions } from "sequelize";
 
-import { BadRequestError, InternalServerError, NotFoundError } from "../core/errors";
+import { BadRequestError, InternalServerError } from "../core/errors";
 import {
   IUserResponse,
   IUserAttributes,
@@ -9,8 +9,12 @@ import {
   IUserDetails,
   IUserUniqueAttributes,
 } from "../interfaces/user.interface";
-import { getReturnArray, getReturnData, pickWithNullish } from "../utils";
+import { USER } from "../constants";
+import { UserModel } from "../models";
+import { getReturnArray, getReturnData } from "../utils";
+import { pgInstance } from "../../db/init.postgresql";
 import { createBalance } from "../models/repositories";
+import { IQueryOptions } from "../interfaces/query.interface";
 import {
   findUserById,
   createUser,
@@ -19,39 +23,32 @@ import {
   updateUserById,
   findUsers,
 } from "../models/repositories/user.repo";
-import { USER } from "../constants";
-import { pgInstance } from "../../db/init.postgresql";
-import { BalanceModel, UserModel } from "../models";
-import { IQueryOptions } from "../interfaces/query.interface";
 
 const userSensitiveFields: Array<keyof Omit<IUserDetails, keyof IUserResponse>> = [
   "password",
-  "createdAt",
-  "updatedAt",
   "deletedAt",
   "isVerified",
 ];
 const userPublicFields: Array<keyof IUserResponse> = [
   "id",
-  "firstName",
-  "lastName",
-  "address",
+  "fullName",
   "email",
   "orgId",
-  "title",
   "balance",
+  "createdAt",
 ];
 
 export async function getUserDetailsForAdmin(id: string) {
   const user = await findUserById(id);
-  if (!user) throw new NotFoundError("User not found!");
+  if (!user) throw new BadRequestError("User not found!");
 
   return getReturnData(user);
 }
 
 export async function getUserDetails(id: string) {
   const user = await findUserById(id, { isVerified: true, exclude: userSensitiveFields });
-  if (!user) throw new NotFoundError("User not found!");
+
+  if (!user) throw new BadRequestError("User not found!");
 
   return getReturnData(user);
 }
@@ -69,15 +66,15 @@ export async function getUserList(filter?: WhereOptions<IUserAttributes>, option
 }
 
 export async function findUserBy(
-  { id, email, username, address }: Partial<IUserUniqueAttributes>,
+  { id, email, username }: Partial<IUserUniqueAttributes>,
   isVerified = true,
   password = false
 ) {
-  return await findUserByOptionalAttributes({ id, email, username, address }, isVerified, password);
+  return await findUserByOptionalAttributes({ id, email, username }, isVerified, password);
 }
 
 export async function updateUser(id: string, data: Partial<IUserAttributes>) {
-  const user = await updateUserById(id, _.pick(data, ["firstName", "lastName", "title", "orgId"]));
+  const user = await updateUserById(id, _.pick(data, ["fullName", "orgId"]));
 
   return getReturnData(user, { excludes: userSensitiveFields });
 }
@@ -86,15 +83,12 @@ export async function registerUser(data: IUserCreationAttributes, transaction?: 
   const foundUser = await findUserBy({
     email: data.email,
     username: data.username,
-    address: data.address,
   });
 
   if (foundUser) {
     if (foundUser.email === data.email) throw new BadRequestError("Email already registered!");
     if (foundUser.username === data.username)
       throw new BadRequestError("Username already existed!");
-    if (foundUser.address === data.address)
-      throw new BadRequestError("Address already registered!");
   }
 
   const sequelize = pgInstance.getSequelize();
@@ -104,29 +98,26 @@ export async function registerUser(data: IUserCreationAttributes, transaction?: 
         ...data,
         role: data.role || USER.ROLE.EMPLOYEE,
         isVerified: data.isVerified || true,
-        orgId: null,
+        orgId: data.orgId || null,
       },
       transaction || t
     );
     if (!user) throw new InternalServerError("Fail to register new user!");
 
     // Create balance for new employee
-    if (!data.role || data.role === USER.ROLE.EMPLOYEE)
+    // @ts-ignore
+    if ([USER.ROLE.EMPLOYEE, USER.ROLE.MEMBER].includes(user.role))
       await createBalance(user.id, transaction || t);
 
     return user;
   });
 
-  return findUserById(user.id, { role: data.role || USER.ROLE.EMPLOYEE });
+  return user;
 }
 
-export async function deleteUser(id: string) {
-  try {
-    await deleteUserById(id);
-    return { id };
-  } catch (err) {
-    throw new InternalServerError("Cannot delete user!");
-  }
+export async function deleteUser(id: string, transaction?: Transaction) {
+  await deleteUserById(id, transaction);
+  return { id };
 }
 
 export const UserService = {

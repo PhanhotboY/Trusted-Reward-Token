@@ -9,7 +9,7 @@ import {
 
 import { pgInstance } from "../../db/init.postgresql";
 import { USER } from "../constants";
-import { OrganizationModel } from "./organization.model";
+import { MemberModel } from "./member.model";
 import { Unionize } from "../utils";
 import { BalanceModel } from "./balance.model";
 
@@ -21,15 +21,12 @@ export class UserModel extends Model<
 > {
   declare id: CreationOptional<string>;
   declare username: string;
-  declare firstName: string;
-  declare lastName: string;
+  declare fullName: string;
   declare password: string;
   declare email: string;
-  declare phone: string;
   declare role: Unionize<typeof USER.ROLE>;
-  declare title: string;
   declare orgId: ForeignKey<UserModel["id"]> | null;
-  declare address: string;
+  declare hdWalletIndex: number;
   declare isVerified: CreationOptional<boolean>;
 
   declare createdAt: CreationOptional<Date>;
@@ -44,11 +41,7 @@ UserModel.init(
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    firstName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    lastName: {
+    fullName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -66,22 +59,15 @@ UserModel.init(
       allowNull: false,
       unique: true,
     },
-    phone: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     role: {
       type: DataTypes.ENUM(...Object.values(USER.ROLE)),
       allowNull: false,
     },
-    title: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    address: {
-      type: DataTypes.STRING,
+    hdWalletIndex: {
+      type: DataTypes.INTEGER,
       allowNull: false,
       unique: true,
+      autoIncrement: true,
     },
     isVerified: {
       type: DataTypes.BOOLEAN,
@@ -95,12 +81,12 @@ UserModel.init(
     sequelize,
     tableName: USER.TABLE_NAME,
     modelName: USER.MODEL_NAME,
-    initialAutoIncrement: "1000",
-    paranoid: true,
+    initialAutoIncrement: "100",
+    // paranoid: true,
   }
 );
 
-UserModel.belongsTo(OrganizationModel, {
+UserModel.belongsTo(MemberModel, {
   targetKey: "id",
   foreignKey: "orgId",
   as: "organization",

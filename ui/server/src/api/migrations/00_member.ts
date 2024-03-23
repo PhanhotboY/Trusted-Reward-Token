@@ -1,16 +1,16 @@
 "use strict";
-import { ORGANIZATION } from "../constants";
-import { OrganizationModel } from "../models";
+import { MEMBER } from "../constants";
+import { MemberModel } from "../models";
 import { Migration } from "../../db/init.postgresql";
 
 /** @type {import('sequelize-cli').Migration} */
 
 const up: Migration = async ({ context: queryInterface }) => {
-  await queryInterface.createTable(ORGANIZATION.TABLE_NAME, OrganizationModel.getAttributes());
+  await queryInterface.createTable(MEMBER.TABLE_NAME, MemberModel.getAttributes());
 };
 
 const down: Migration = async ({ context: queryInterface }) => {
-  await queryInterface.dropTable(ORGANIZATION.TABLE_NAME, {
+  await queryInterface.dropTable(MEMBER.TABLE_NAME, {
     force: true,
   });
 };

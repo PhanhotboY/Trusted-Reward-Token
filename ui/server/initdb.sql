@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS public.users (
 	"role" varchar(10) NOT NULL,
 	"password" varchar(100) NOT NULL,
 	organization int4 NOT NULL references public.users(id),
-	"address" varchar(50) NULL,
+	"path" varchar(50) NULL,
 	created_at timestamp DEFAULT now(),
 	CONSTRAINT users_pkey PRIMARY KEY (id)
 );

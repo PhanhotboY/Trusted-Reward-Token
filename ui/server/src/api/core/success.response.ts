@@ -14,6 +14,7 @@ class SuccessBase {
 
   send(res: Response) {
     res.status(this.status).json({
+      status: this.status,
       message: this.message,
       metadata: this.metadata,
       options: this.options,

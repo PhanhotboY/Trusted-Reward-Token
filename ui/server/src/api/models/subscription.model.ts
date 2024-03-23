@@ -8,24 +8,28 @@ import {
 } from "sequelize";
 
 import { pgInstance } from "../../db/init.postgresql";
-import { REGISTER_REASON } from "../constants";
-import { UserModel, ReasonModel } from "../models";
+import { SUBSCRIPTION } from "../constants";
+import { UserModel, ReasonModel } from ".";
 
 const sequelize = pgInstance.getSequelize();
 
-export class RegisterReasonModel extends Model<
-  InferAttributes<RegisterReasonModel>,
-  InferCreationAttributes<RegisterReasonModel>
+export class SubscriptionModel extends Model<
+  InferAttributes<SubscriptionModel>,
+  InferCreationAttributes<SubscriptionModel>
 > {
   declare userId: ForeignKey<UserModel["id"]>;
   declare reasonId: ForeignKey<ReasonModel["id"]>;
   declare deadline: Date;
 
+  declare isCommitted: CreationOptional<boolean>;
+  declare description: CreationOptional<string>;
+  declare committedAt: CreationOptional<Date>;
+
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
 
-RegisterReasonModel.init(
+SubscriptionModel.init(
   {
     userId: {
       type: DataTypes.UUID,
@@ -39,23 +43,37 @@ RegisterReasonModel.init(
       type: DataTypes.DATE,
       allowNull: false,
     },
+    isCommitted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    description: {
+      type: DataTypes.TEXT,
+    },
+    committedAt: DataTypes.DATE,
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
   },
   {
     sequelize,
-    modelName: REGISTER_REASON.MODEL_NAME,
-    tableName: REGISTER_REASON.TABLE_NAME,
+    indexes: [
+      {
+        fields: ["isCommitted"],
+      },
+    ],
+    modelName: SUBSCRIPTION.MODEL_NAME,
+    tableName: SUBSCRIPTION.TABLE_NAME,
   }
 );
 
-RegisterReasonModel.belongsTo(UserModel, {
+SubscriptionModel.belongsTo(UserModel, {
   targetKey: "id",
   foreignKey: "userId",
-  as: "register-user",
+  as: "subscriber",
+  onDelete: "CASCADE",
 });
-RegisterReasonModel.hasOne(ReasonModel, {
+SubscriptionModel.hasOne(ReasonModel, {
   sourceKey: "reasonId",
   foreignKey: "id",
-  as: "register-reason",
+  as: "reason",
 });

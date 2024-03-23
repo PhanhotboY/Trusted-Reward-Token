@@ -1,14 +1,17 @@
 version: "3"
 services:
-  # backend:
-  #   build: .
-  #   ports:
-  #     - 8080:8080
-  #   volumes:
-  #     - ./src:/home/node/reward-system/src
-  #     - ./.env.server:/home/node/reward-system/.env
-  #   depends_on:
-  #     - pg-reward-system
+  backend:
+    build: .
+    ports:
+      - 8080:8080
+    volumes:
+      - ./src:/home/node/reward-system/src
+      - ./.env.server:/home/node/reward-system/.env
+    environment:
+      - PG_HOST=pg-reward-system
+      - PG_PORT=5432
+    depends_on:
+      - pg-reward-system
 
   pg-reward-system:
     image: postgres:16-alpine

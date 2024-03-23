@@ -11,7 +11,21 @@ async function getBalance(req: Request, res: Response) {
     link: {
       self: {
         href: req.originalUrl,
-        method: "GET",
+        method: req.method,
+      },
+    },
+  });
+}
+
+async function renewal(req: Request, res: Response) {
+  return OK({
+    res,
+    message: "Balance renewed successfully",
+    metadata: await getReputationBalance(req.params.userId),
+    link: {
+      self: {
+        href: req.originalUrl,
+        method: "POST",
       },
     },
   });

@@ -1,20 +1,28 @@
 import { Router } from "express";
 
 import { reasonController } from "../controllers";
-import { authentication, onlyAdmin } from "../middlewares/auth.middleware";
+import {
+  authentication,
+  onlyAdmin,
+  onlyAuthUser,
+  onlyMember,
+} from "../middlewares/auth.middleware";
 
 const reasonRouter = Router();
 
-reasonRouter.use(authentication, onlyAdmin);
+reasonRouter.use(authentication);
 
-// adminRouter.get("/admin", adminController.getAdmin);
-// reasonRouter.post("/reasons", reasonController.addreason);
+reasonRouter.get("/:reasonId", onlyAuthUser, reasonController.getReason);
+reasonRouter.get("/", onlyAuthUser, reasonController.getReasonList);
 
-// reasonRouter.get("/reasons", reasonController.getreasonList);
+// Member routes
+reasonRouter.post("/:reasonId", onlyMember, reasonController.commitReason);
+reasonRouter.post("/:reasonId/subscribe", onlyMember, reasonController.subscribeReason);
+reasonRouter.post("/:reasonId/unsubscribe", onlyMember, reasonController.unsubscribeReason);
 
-// reasonRouter.get("/swags", reasonController.getSwagList);
-// reasonRouter.post("/swags", reasonController.addSwag);
-
-// reasonRouter.post("/issue-token", reasonController.issueToken);
+// Admin routes
+reasonRouter.post("/", onlyAdmin, reasonController.createReason);
+reasonRouter.put("/:reasonId", onlyAdmin, reasonController.updateReason);
+reasonRouter.delete("/:reasonId", onlyAdmin, reasonController.deleteReason);
 
 export default reasonRouter;

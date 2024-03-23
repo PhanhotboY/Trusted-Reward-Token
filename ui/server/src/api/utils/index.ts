@@ -23,7 +23,8 @@ function getReturnArray<T, R = T>(tupleArr: Array<T>, filter?: TFilter<T>): Arra
 
 const isNullish = (val: any) => (val ?? null) === null;
 const isEmptyObj = (obj: Object) => !Object.keys(obj).length;
-const caculateOffset = (page: number, limit: number) => limit * page || 0;
+const caculateOffset = (page?: number | string, limit?: number | string) =>
+  (+limit! || 0) * (+page! || 0) || 0;
 const isObj = (obj: any) => obj instanceof Object && !Array.isArray(obj);
 const capitalizeFirstLetter = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 

@@ -8,25 +8,25 @@ import {
 } from "sequelize";
 
 import { UserModel } from "./user.model";
-import { ORGANIZATION } from "../constants";
+import { MEMBER } from "../constants";
 import { pgInstance } from "../../db/init.postgresql";
 
 const sequelize = pgInstance.getSequelize();
 
-export class OrganizationModel extends Model<
-  InferAttributes<OrganizationModel>,
-  InferCreationAttributes<OrganizationModel>
+export class MemberModel extends Model<
+  InferAttributes<MemberModel>,
+  InferCreationAttributes<MemberModel>
 > {
   declare id: CreationOptional<string>;
   declare name: string;
-  declare size: (typeof ORGANIZATION.SIZE)[keyof typeof ORGANIZATION.SIZE];
+  declare size: (typeof MEMBER.SIZE)[keyof typeof MEMBER.SIZE];
   declare location: string;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
 
-OrganizationModel.init(
+MemberModel.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -39,7 +39,7 @@ OrganizationModel.init(
       unique: true,
     },
     size: {
-      type: DataTypes.ENUM(...Object.values(ORGANIZATION.SIZE)),
+      type: DataTypes.ENUM(...Object.values(MEMBER.SIZE)),
       allowNull: false,
     },
     location: {
@@ -51,8 +51,8 @@ OrganizationModel.init(
   },
   {
     sequelize,
-    tableName: ORGANIZATION.TABLE_NAME,
-    modelName: ORGANIZATION.MODEL_NAME,
+    tableName: MEMBER.TABLE_NAME,
+    modelName: MEMBER.MODEL_NAME,
     initialAutoIncrement: "1000",
   }
 );

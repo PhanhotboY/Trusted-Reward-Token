@@ -1,5 +1,7 @@
+import { getReturnData } from "../utils";
 import { NotFoundError } from "../core/errors";
 import { BalanceRepo as Br } from "../models/repositories";
+import { IBalanceCreationAttributes } from "../interfaces/balance.interface";
 
 async function getFullBalance(id: string) {
   const balance = await Br.findBalanceByUserId(id);
@@ -8,17 +10,27 @@ async function getFullBalance(id: string) {
     throw new NotFoundError("Not registered!");
   }
 
-  return balance;
+  return getReturnData(balance);
 }
 
 async function getReputationBalance(id: string) {
   const balance = await getFullBalance(id);
 
-  return { userId: balance.userId, reputationToken: balance.reputationToken };
+  return getReturnData(balance, { fields: ["userId", "reputationToken"] });
 }
 
 async function createBalance(userId: string) {
   return Br.createBalance(userId);
 }
 
-export { getReputationBalance, getFullBalance, createBalance };
+// async function renewalBalance(id: string) {
+//   const balance = await getFullBalance(id);
+
+//   return Br.renewalBalance(balance);
+// }
+
+async function updateBalance(userId: string, balance: IBalanceCreationAttributes) {
+  return Br.updateBalance(userId, balance);
+}
+
+export { getReputationBalance, getFullBalance, createBalance, updateBalance };

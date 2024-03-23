@@ -43,11 +43,31 @@ class PostgreSQL {
 
   public async connect() {
     try {
-      await PostgreSQL.sequelize.authenticate();
+      await PostgreSQL.sequelize.authenticate({
+        retry: {
+          match: [
+            /SequelizeConnectionError/,
+            /SequelizeConnectionRefusedError/,
+            /SequelizeHostNotFoundError/,
+            /SequelizeHostNotReachableError/,
+            /SequelizeInvalidConnectionError/,
+            /SequelizeConnectionTimedOutError/,
+          ],
+          name: "query",
+          backoffBase: 100,
+          backoffExponent: 1.1,
+          timeout: 60000,
+          max: Infinity,
+          report(message, obj, err) {
+            console.error(`Retrying database connection: ${message}`);
+          },
+        },
+      });
       console.log("Database connection has been established successfully.");
+
       return true;
-    } catch (error) {
-      console.error("Unable to connect to the database:", error);
+    } catch (error: any) {
+      console.error("Unable to connect to the database:", <any>error.message);
       return false;
     }
   }

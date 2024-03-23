@@ -17,4 +17,4 @@ export * from "./swag.controller";
 export * from "./request.controller";
 export * from "./reason.controller";
 export * from "./user.controller";
-export * from "./organization.controller";
+export * from "./member.controller";
