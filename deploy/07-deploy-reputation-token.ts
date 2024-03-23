@@ -14,7 +14,7 @@ const reputationTokenDeployFunc: DeployFunction = async ({
     args: [[deployer, tokenOperator.address]],
     log: true,
     autoMine: true,
-    gasLimit: 3e7,
+    gasLimit: 6721975,
   });
 };
 

@@ -38,10 +38,12 @@
 
 - [ ] Backend
 
-  - [x] Database models
+  - Database models
 
-  - [x] Authentication
+  - Authentication
 
-  - [ ] Services
+  - Services
+
+    -
 
 - [ ] Frontend

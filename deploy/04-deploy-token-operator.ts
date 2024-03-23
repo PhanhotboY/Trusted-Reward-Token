@@ -9,12 +9,14 @@ const tokenOperatorDeployFunc: DeployFunction = async ({ deployments, getNamedAc
     deployments.get("TokenClaimsIssuer"),
   ]);
 
-  await deployments.deploy("TokenOperator", {
+  const result = await deployments.deploy("TokenOperator", {
     from: admin,
     log: true,
     autoMine: true,
     args: [didRegistry.address, claimsRegistry.address, claimsIssuer.address],
   });
+  result.receipt &&
+    console.log("Gas used for TokenOperator deployment:", result.receipt.gasUsed.toString());
 };
 
 export default tokenOperatorDeployFunc;

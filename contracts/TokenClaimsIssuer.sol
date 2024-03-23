@@ -16,12 +16,22 @@ contract TokenClaimsIssuer is Ownable {
 
     event MembershipRevoked(address indexed issuer, address indexed subject, uint256 removedAt);
 
-    event ClaimAdded(address indexed issuer, address indexed subject, bytes32 indexed key, bytes32 value, uint256 updatedAt);
+    event ClaimAdded(
+        address indexed issuer,
+        address indexed subject,
+        bytes32 indexed key,
+        bytes32 value,
+        uint256 updatedAt
+    );
 
-    event ClaimRemoved(address indexed issuer, address indexed subject, bytes32 indexed key, uint256 removedAt);
+    event ClaimRemoved(
+        address indexed issuer,
+        address indexed subject,
+        bytes32 indexed key,
+        uint256 removedAt
+    );
 
-
-    constructor(address _claimRegistry) Ownable(address(this)) {
+    constructor(address _claimRegistry) Ownable(msg.sender) {
         claimRegistry = EthereumClaimsRegistry(_claimRegistry);
     }
 

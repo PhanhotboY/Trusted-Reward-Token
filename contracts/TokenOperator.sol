@@ -125,7 +125,7 @@ contract TokenOperator is Ownable {
 
             if (_memberCheck(org)) {
                 if (_employeeCheck(org, acc)) {
-                    mintReward(org, acc, amount, "");
+                    mintRewards(org, acc, amount, "");
                 } else {
                     emit EmployeeNotRegistered(org, acc);
                     emit BatchMintError(org, acc, amount);
@@ -186,7 +186,7 @@ contract TokenOperator is Ownable {
         emit ReputationBurned(account, amount, operatorData);
     }
 
-    function mintReward(
+    function mintRewards(
         address organization,
         address account,
         uint256 amount,
