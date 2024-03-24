@@ -81,7 +81,7 @@ UserModel.init(
     sequelize,
     tableName: USER.TABLE_NAME,
     modelName: USER.MODEL_NAME,
-    initialAutoIncrement: "100",
+    initialAutoIncrement: "20",
     // paranoid: true,
   }
 );

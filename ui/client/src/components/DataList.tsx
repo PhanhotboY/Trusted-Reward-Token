@@ -1,7 +1,7 @@
 import { usePathname } from "next/navigation";
 import { getDisplayValue } from "../utils";
 
-export default function DataList<T>({
+export default function DataList<T extends { [key: string]: any }>({
   fields,
   data,
   deletable,

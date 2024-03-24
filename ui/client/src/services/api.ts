@@ -1,4 +1,4 @@
-import { getLocalItem } from "../utils";
+import { getLocalItem, removeLocalItem } from "../utils";
 import { IServerReponse } from "../interfaces/response.interface";
 
 const baseURL = process.env.API_URL || "http://localhost:8080/api/v1";
@@ -27,6 +27,11 @@ export default class fetcher {
         revalidate: 10,
       },
       ...options,
+    }).catch((error) => {
+      removeLocalItem("accessToken");
+      removeLocalItem("refreshToken");
+      removeLocalItem("user");
+      throw new Error(error);
     });
 
     const json: IServerReponse<T> = await res.json();

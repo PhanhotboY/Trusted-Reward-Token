@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { ToastContainer } from "react-toastify";
 
 import "./globals.css";
 import { AuthProvider } from "../contexts";
@@ -22,6 +23,8 @@ export default function RootLayout({
       <AuthProvider>
         <AppProvider>
           <body className={inter.className}>{children}</body>
+
+          <ToastContainer position="top-center" autoClose={2000} className="capitalize" />
         </AppProvider>
       </AuthProvider>
     </html>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import Head from "next/head";
 import Image from "next/image";
 import { useEffect } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useRouter, usePathname } from "next/navigation";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -124,8 +124,6 @@ export default function RootTemplate({
         </nav>
 
         <div className="h-full grow overflow-auto">{children}</div>
-
-        <ToastContainer position="top-center" autoClose={2000} className="capitalize" />
       </main>
     </>
   );
