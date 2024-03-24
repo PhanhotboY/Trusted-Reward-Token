@@ -5,7 +5,7 @@ import { updateBalance } from "../services/balance.service";
 import { getHDNodeWallet } from "../utils/hdWallet";
 
 const refreshBalance = async (user: IUserDetails) => {
-  const wallet = getHDNodeWallet(user.pathIndex);
+  const wallet = getHDNodeWallet(user.hdWalletIndex);
   const tokenOperator = await TokenOperatorContract();
   tokenOperator.connect(wallet);
   const [rewardToken, penaltyToken, reputationToken] = await tokenOperator.balance(wallet.address);

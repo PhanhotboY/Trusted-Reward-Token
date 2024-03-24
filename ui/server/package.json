@@ -9,6 +9,7 @@
     "start": "node ./dist/server.js",
     "test": "jest --watchAll --runInBand --detectOpenHandles",
     "test:db": "ts-node-dev test/testdb.ts",
+    "test:rpc": "ts-node-dev test/testrpc.ts",
     "migrate": "ts-node ./src/migrator.ts",
     "db:migrate:undo": "yarn sequelize-cli db:migrate:undo",
     "db:seed:generate": "yarn sequelize-cli db:seed:generate",

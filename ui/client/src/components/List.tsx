@@ -1,7 +1,7 @@
 import DataList from "./DataList";
 import { getDisplayAlias, getDisplayValue } from "../utils";
 
-export default function List<T>({
+export default function List<T extends { [key: string]: any }>({
   fields,
   data,
   deletable = false,

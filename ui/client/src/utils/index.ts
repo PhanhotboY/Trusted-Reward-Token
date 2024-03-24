@@ -46,8 +46,8 @@ const removeNestedNullish = <T>(any: any): T => {
 };
 
 const getLocalItem = (key: string) => {
-  if (localStorage) {
-    const item = localStorage.getItem(key);
+  if (typeof window !== "undefined") {
+    const item = window.localStorage.getItem(key);
     try {
       return JSON.parse(item!);
     } catch (error) {
@@ -55,6 +55,18 @@ const getLocalItem = (key: string) => {
     }
   }
   return null;
+};
+
+const setLocalItem = (key: string, value: any) => {
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(key, typeof value === "string" ? value : JSON.stringify(value));
+  }
+};
+
+const removeLocalItem = (key: string) => {
+  if (typeof window !== "undefined") {
+    window.localStorage.removeItem(key);
+  }
 };
 
 const getDisplayAlias = (field: Paths<any>) => {
@@ -88,6 +100,8 @@ export {
   isObj,
   capitalizeFirstLetter,
   getLocalItem,
+  setLocalItem,
+  removeLocalItem,
   getDisplayAlias,
   getDisplayValue,
 };

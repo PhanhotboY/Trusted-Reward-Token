@@ -1,14 +1,17 @@
 import { Sequelize } from "sequelize";
+require("dotenv").config({ path: ".env.server" });
 
-const sequelize = new Sequelize("postgres://admin:rewardsystem@localhost:5433/reward-system");
+import { pgInstance } from "../src/db/init.postgresql";
 
 async function testdb() {
-  await sequelize.authenticate();
+  await pgInstance.connect();
+  return pgInstance;
 }
 
 testdb()
-  .then(() => {
+  .then((instance) => {
     console.log("Connection has been established successfully.");
+    instance.closeConnection();
   })
   .catch((err) => {
     console.log(err);

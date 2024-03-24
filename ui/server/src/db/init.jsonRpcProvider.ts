@@ -1,4 +1,8 @@
-import { ethers, Network } from "ethers";
+import { ethers } from "ethers";
+
+import { jsonRpcProviderConfig } from "../configs/jsonRpcProvider.config";
+
+const config = jsonRpcProviderConfig[process.env.NODE_ENV || "development"];
 
 class JsonRpcProvider extends ethers.JsonRpcProvider {
   instance: ethers.JsonRpcProvider;
@@ -9,24 +13,15 @@ class JsonRpcProvider extends ethers.JsonRpcProvider {
   }
 
   initJsonRpcConnection() {
-    const connection = new ethers.JsonRpcProvider(
-      process.env.JSON_RPC_URL || "http://localhost:8545",
-      undefined,
-      {
-        staticNetwork: true,
-        polling: true,
-        batchMaxCount: 4,
-        pollingInterval: 100000,
-      }
-    );
+    const connection = new ethers.JsonRpcProvider(config.url);
 
     return connection;
   }
 
   getInstance() {
-    if (!this.provider) this.instance = this.initJsonRpcConnection();
+    if (!this.instance) this.instance = this.initJsonRpcConnection();
 
-    return this.provider;
+    return this.instance;
   }
 }
 

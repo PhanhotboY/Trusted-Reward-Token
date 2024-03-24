@@ -23,7 +23,7 @@ export default function EmployeePage() {
     };
 
     fetchEmployees();
-  }, []);
+  }, [params.memberId, setEmployees]);
 
   return (
     <div className="px-5 py-3 relative min-h-full">

@@ -14,6 +14,7 @@ const server = app.listen(port, async () => {
 
 process.on("SIGINT", () => cleanup("SIGINT"));
 process.on("SIGTERM", () => cleanup("SIGTERM"));
+process.on("uncaughtException", () => cleanup("uncaughtException"));
 
 async function cleanup(sig: string) {
   console.log(`Received kill signal: ${sig}, shutting down gracefully`);

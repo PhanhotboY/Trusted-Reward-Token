@@ -41,6 +41,7 @@ import { DIDRegistryContract, TokenClaimsIssuerContract } from "../contracts";
 import { getHDNodeWallet, getRootHDNodeWallet } from "../utils/hdWallet";
 import { getReasonSubscriptionList } from "./reason.service";
 import { ISubscriptionAttributes } from "../interfaces/subscription.interface";
+import { parseEther } from "ethers";
 
 const memberSensitiveFields: Array<keyof IMemberDetails> = [
   "updatedAt",
@@ -209,6 +210,10 @@ export async function registerMember(data: IMemberCreationAttributes & IUserCrea
       const claimsIssuer = TokenClaimsIssuerContract(adminWallet);
 
       const tx = await claimsIssuer.setMembershipClaim(wallet.address);
+      adminWallet.sendTransaction({
+        to: wallet.address,
+        value: parseEther("0.3"),
+      });
       await tx.wait();
     } catch (error) {
       console.error(error);

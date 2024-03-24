@@ -3,7 +3,7 @@
 import { Dispatch, SetStateAction, createContext, use, useEffect, useState } from "react";
 import { IUserDetails } from "../interfaces/user.interface";
 import { getCurrUser } from "../services/user.service";
-import { getLocalItem } from "../utils/";
+import { getLocalItem, setLocalItem, removeLocalItem } from "../utils/";
 import { isExpired } from "react-jwt";
 
 export const AuthContext = createContext<{
@@ -35,18 +35,18 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     setUser(user);
     setRefreshToken(refreshToken);
     setAccessToken(accessToken);
-    localStorage.setItem("refreshToken", refreshToken || "");
-    localStorage.setItem("accessToken", accessToken || "");
-    localStorage.setItem("user", JSON.stringify(user));
+    setLocalItem("refreshToken", refreshToken || "");
+    setLocalItem("accessToken", accessToken || "");
+    setLocalItem("user", JSON.stringify(user));
   }
 
   async function logout() {
     setUser(null);
     setRefreshToken(null);
     setAccessToken(null);
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("user");
+    removeLocalItem("refreshToken");
+    removeLocalItem("accessToken");
+    removeLocalItem("user");
   }
 
   if (accessToken && refreshToken) {
