@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ToastContainer } from "react-toastify";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import "./globals.css";
 import { AuthProvider } from "../contexts";
@@ -27,6 +28,8 @@ export default function RootLayout({
           <ToastContainer position="top-center" autoClose={2000} className="capitalize" />
         </AppProvider>
       </AuthProvider>
+
+      <SpeedInsights />
     </html>
   );
 }
