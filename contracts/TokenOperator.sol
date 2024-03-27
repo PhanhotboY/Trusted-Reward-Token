@@ -212,7 +212,7 @@ contract TokenOperator is Ownable {
             keccak256(abi.encodePacked("membership"))
         );
 
-        return isMember == keccak256(abi.encodePacked("membership"));
+        return isMember == keccak256(abi.encodePacked("true"));
     }
 
     function _employeeCheck(address organization, address account) private view returns (bool) {

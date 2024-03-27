@@ -430,7 +430,7 @@ abstract contract ModifiedERC777 is IERC777, IERC20 {
         return
             tokenHolder == operator ||
             _operators[tokenHolder][operator] ||
-            (_defaultOperators[operator] && _revokedDefaultOperators[tokenHolder][operator]);
+            (_defaultOperators[operator] && !_revokedDefaultOperators[tokenHolder][operator]);
     }
 
     // internal
