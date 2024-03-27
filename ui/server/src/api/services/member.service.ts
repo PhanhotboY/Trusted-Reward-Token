@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import { ethers, parseEther } from "ethers";
 import { Sequelize, Transaction, WhereOptions } from "sequelize";
 
 import { MEMBER, USER } from "../constants";
@@ -7,11 +8,7 @@ import { getRequestList } from "./request.service";
 import { pgInstance } from "../../db/init.postgresql";
 import { getReturnArray, getReturnData } from "../utils";
 import { IQueryOptions } from "../interfaces/query.interface";
-import {
-  IUserAttributes,
-  IUserCreationAttributes,
-  IUserDetails,
-} from "../interfaces/user.interface";
+import { IUserCreationAttributes } from "../interfaces/user.interface";
 import {
   BadRequestError,
   InternalServerError,
@@ -19,20 +16,11 @@ import {
   UnauthorizedError,
 } from "../core/errors";
 import { IMemberCreationAttributes, IMemberDetails } from "../interfaces/member.interface";
-import {
-  deleteUser,
-  findUserBy,
-  getUser,
-  getUserDetails,
-  getUserList,
-  registerUser,
-  updateUser,
-} from "./user.service";
+import { deleteUser, findUserBy, getUserDetails, getUserList, registerUser } from "./user.service";
 import {
   getMembers,
   findMemberById,
   findMemberByName,
-  findUserById,
   createMember,
   deleteMember,
   findMemberByMemberId,
@@ -41,7 +29,8 @@ import { DIDRegistryContract, TokenClaimsIssuerContract } from "../contracts";
 import { getHDNodeWallet, getRootHDNodeWallet } from "../utils/hdWallet";
 import { getReasonSubscriptionList } from "./reason.service";
 import { ISubscriptionAttributes } from "../interfaces/subscription.interface";
-import { parseEther } from "ethers";
+import { provider } from "../../db/init.jsonRpcProvider";
+import { burnAllTokens } from "./token.service";
 
 const memberSensitiveFields: Array<keyof IMemberDetails> = [
   "updatedAt",
@@ -59,7 +48,10 @@ const memberPublicFields: Array<keyof IMemberDetails> = [
   "organization",
 ];
 
-export async function getMemberList(filter: WhereOptions<IMemberDetails>, options: IQueryOptions) {
+export async function getMemberList(
+  filter?: WhereOptions<IMemberDetails>,
+  options?: IQueryOptions
+) {
   const orgList = await getMembers(filter, { ...options, exclude: memberSensitiveFields });
 
   return getReturnArray(orgList);
@@ -146,6 +138,7 @@ export async function registerEmployee(memberId: string, data: IUserCreationAttr
       const didRegistry = DIDRegistryContract(memberWallet);
 
       const validity = 365 * 24 * 60 * 60;
+
       const tx = await didRegistry.addDelegate(
         memberWallet.address,
         MEMBER.DID_DELEGATE_TYPE,
@@ -210,11 +203,12 @@ export async function registerMember(data: IMemberCreationAttributes & IUserCrea
       const claimsIssuer = TokenClaimsIssuerContract(adminWallet);
 
       const tx = await claimsIssuer.setMembershipClaim(wallet.address);
-      adminWallet.sendTransaction({
+      await tx.wait();
+      const res = await adminWallet.sendTransaction({
         to: wallet.address,
         value: parseEther("0.3"),
       });
-      await tx.wait();
+      await res.wait();
     } catch (error) {
       console.error(error);
       await transaction.rollback();
@@ -261,6 +255,8 @@ export async function removeEmployee(memberId: string, employeeId: string) {
         employeeWallet.address
       );
       await tx.wait();
+
+      await burnAllTokens([employeeWallet.address]);
     } catch (error) {
       console.log("error: ", error);
       await transaction.rollback();
@@ -271,11 +267,10 @@ export async function removeEmployee(memberId: string, employeeId: string) {
   return true;
 }
 
-export const removeMember = async (memberId: string) => {
-  checkUUIDv4(memberId);
-
+export async function removeMember(memberId: string) {
   const member = await findMemberById(memberId);
   if (!member) throw new BadRequestError("Member not found!");
+  const employees = await getMemberEmployeeList(member.orgId!);
 
   const sequelize = pgInstance.getSequelize();
   await sequelize.transaction(async (transaction) => {
@@ -285,10 +280,25 @@ export const removeMember = async (memberId: string) => {
       const memberWallet = getHDNodeWallet(member.hdWalletIndex);
       const claimsIssuer = TokenClaimsIssuerContract(adminWallet);
 
-      const owner = await claimsIssuer.owner();
-      console.log(owner);
       const tx = await claimsIssuer.revokeMembershipClaim(memberWallet.address);
-      await tx.wait();
+      const receipt = await tx.wait();
+
+      const memberBalance = await provider.getBalance(memberWallet.address);
+
+      const res = await memberWallet.sendTransaction({
+        to: adminWallet.address,
+        value: memberBalance - BigInt(21000) * receipt!.gasPrice,
+        gasLimit: 21000,
+        gasPrice: receipt!.gasPrice,
+      });
+      await res.wait();
+
+      await burnAllTokens(
+        employees.reduce(
+          (acc, emp) => [...acc, getHDNodeWallet(emp.hdWalletIndex).address],
+          [memberWallet.address]
+        )
+      );
     } catch (error) {
       console.log(error);
       await transaction.rollback();
@@ -297,7 +307,7 @@ export const removeMember = async (memberId: string) => {
   });
 
   return getReturnData(member);
-};
+}
 
 export const MemberService = {
   getMemberList,

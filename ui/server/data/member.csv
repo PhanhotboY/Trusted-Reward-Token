@@ -1,0 +1,21 @@
+name,size,location,username,email,password,fullName
+Acme Corporation,small,New York,acme_rep,john@acme.com,hi,John Smith
+ABC Widgets,medium,Los Angeles,abc_rep,jane@abcwidgets.com,hi,Jane Johnson
+XYZ Enterprises,large,Chicago,xyz_rep,mike@xyz.com,hi,Michael Williams
+Global Solutions,small,Houston,global_rep,emily@globalsol.com,hi,Emily Davis
+Tech Innovations,medium,San Francisco,tech_rep,david@techinv.com,hi,David Lee
+VentureX,large,Boston,venture_rep,sarah@venturexco.com,hi,Sarah Roberts
+Alpha Industries,small,Seattle,alpha_rep,chris@alphaind.com,hi,Chris Evans
+Beta Corporation,medium,Denver,beta_rep,lisa@beta-corp.com,hi,Lisa Thompson
+Gamma Enterprises,large,Atlanta,gamma_rep,kevin@gammaent.com,hi,Kevin Nguyen
+Delta Solutions,small,Miami,delta_rep,amy@delta-sol.com,hi,Amy Garcia
+Omega Technologies,medium,Dallas,omega_rep,jason@omega-tech.com,hi,Jason Rodriguez
+Sigma Innovations,large,Phoenix,sigma_rep,sandra@sigma-innov.com,hi,Sandra Martinez
+Nova Corporation,small,Portland,nova_rep,matt@nova-corp.com,hi,Matt Brown
+Prime Solutions,medium,Philadelphia,prime_rep,rachel@prime-sol.com,hi,Rachel Kim
+Infinity Enterprises,large,Minneapolis,infinity_rep,patrick@infinityent.com,hi,Patrick Murphy
+Sunrise Technologies,small,Orlando,sunrise_rep,stephanie@sunrise-tech.com,hi,Stephanie Collins
+Horizon Innovations,medium,Salt Lake City,horizon_rep,brandon@horizoninv.com,hi,Brandon Hill
+Apex Corporation,large,Detroit,apex_rep,tiffany@apex-corp.com,hi,Tiffany Turner
+Starlight Solutions,small,Austin,starlight_rep,nathan@starlight-sol.com,hi,Nathan Stewart
+Quantum Enterprises,medium,Raleigh,quantum_rep,michelle@quantument.com,hi,Michelle Chang

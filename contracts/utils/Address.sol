@@ -9,7 +9,7 @@ library Address {
          *
          * @dev EOA: Externally Owned Account
          */
-        require(tx.origin == msg.sender, "Not EOA");
+        // require(tx.origin == msg.sender, "Not EOA");
 
         uint32 size;
         assembly {

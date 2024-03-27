@@ -56,7 +56,7 @@ export const getReasonSubscription = async (memberId: string, reasonId: string) 
       {
         model: UserModel,
         as: "subscriber",
-        attributes: ["id", "orgId", "email", "fullName", "createdAt"],
+        attributes: ["id", "orgId", "email", "hdWalletIndex", "fullName", "createdAt"],
         include: [{ model: MemberModel, as: "organization" }],
       },
       {

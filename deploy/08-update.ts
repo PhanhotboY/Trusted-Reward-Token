@@ -1,5 +1,4 @@
 import { DeployFunction } from "hardhat-deploy/dist/types";
-import { TokenOperator } from "../typechain-types";
 import fs from "fs";
 import path from "path";
 
@@ -17,7 +16,7 @@ const updateFunc: DeployFunction = async ({ deployments, getNamedAccounts, ether
     claimsRegistry,
     claimsIssuer,
   ] = await Promise.all([
-    getContract("TokenOperator", admin) as Promise<TokenOperator>,
+    getContract("TokenOperator", admin),
     getDeployment("RewardToken"),
     getDeployment("PenaltyToken"),
     getDeployment("ReputationToken"),
@@ -25,7 +24,7 @@ const updateFunc: DeployFunction = async ({ deployments, getNamedAccounts, ether
     getDeployment("EthereumClaimsRegistry"),
     getDeployment("TokenClaimsIssuer"),
   ]);
-  await tokenOperator.registerTokens(
+  await (<any>tokenOperator).registerTokens(
     rewardToken.address,
     penaltyToken.address,
     reputationToken.address

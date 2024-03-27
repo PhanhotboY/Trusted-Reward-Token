@@ -22,6 +22,8 @@ import {
   PenaltyToken__factory,
   ReputationToken,
   ReputationToken__factory,
+  EthereumClaimsRegistry,
+  EthereumClaimsRegistry__factory,
 } from "./typechain-types";
 
 const contractAddresses = {
@@ -31,6 +33,7 @@ const contractAddresses = {
   RewardToken: <string>process.env.CONTRACT_RewardToken,
   PenaltyToken: <string>process.env.CONTRACT_PenaltyToken,
   ReputationToken: <string>process.env.CONTRACT_ReputationToken,
+  EthereumClaimsRegistry: <string>process.env.CONTRACT_EthereumClaimsRegistry,
 };
 
 const contractFactories = {
@@ -40,6 +43,7 @@ const contractFactories = {
   RewardToken: RewardToken__factory,
   PenaltyToken: PenaltyToken__factory,
   ReputationToken: ReputationToken__factory,
+  EthereumClaimsRegistry: EthereumClaimsRegistry__factory,
 };
 
 const getContract = <T>(contractName: keyof typeof contractFactories, runner?: ContractRunner) => {
@@ -58,3 +62,5 @@ export const PenaltyTokenContract = (runner?: ContractRunner) =>
   getContract<PenaltyToken>("PenaltyToken", runner);
 export const ReputationTokenContract = (runner?: ContractRunner) =>
   getContract<ReputationToken>("ReputationToken", runner);
+export const ClaimsRegistryContract = (runner?: ContractRunner) =>
+  getContract<EthereumClaimsRegistry>("EthereumClaimsRegistry", runner);

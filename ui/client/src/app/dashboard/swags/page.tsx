@@ -80,6 +80,9 @@ export default function SwagAdminPage() {
               });
 
               setSwags([...swags, newSwag]);
+              setTitle("");
+              setValue(0);
+              setDescription("");
             } catch (error) {
               console.log(error);
             }

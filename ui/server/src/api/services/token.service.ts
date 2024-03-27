@@ -1,21 +1,12 @@
 import { BytesLike, getAddress, parseEther } from "ethers";
 
-import {
-  DIDRegistryContract,
-  RewardTokenContract,
-  TokenClaimsIssuerContract,
-  TokenOperatorContract,
-} from "../contracts";
+import { TokenOperatorContract } from "../contracts";
 import { getRootHDNodeWallet } from "../utils/hdWallet";
 
 const adminWallet = getRootHDNodeWallet();
 
 async function getFullBalanceOf(address: string) {
-  const tokenOperatorContract = await TokenOperatorContract(adminWallet);
-  const rewardTokenContract = await RewardTokenContract(adminWallet);
-
-  const rwToken = await rewardTokenContract.balanceOf(address);
-  console.log("reward token of address", rwToken.toString());
+  const tokenOperatorContract = TokenOperatorContract(adminWallet);
 
   const [rewardToken, penaltyToken, reputationToken] = await tokenOperatorContract.balance(address);
 
@@ -39,7 +30,7 @@ async function mintRewardToken(
   empAddresses: Array<string>,
   amount: Array<number | string>
 ) {
-  const tokenOperatorContract = await TokenOperatorContract(adminWallet);
+  const tokenOperatorContract = TokenOperatorContract(adminWallet);
 
   const res = await tokenOperatorContract.batchMintReward(
     memberAddresses.map((orgAddress) => getAddress(orgAddress)),
@@ -66,7 +57,7 @@ async function mintPenaltyToken(
   empAddresses: Array<string>,
   amount: Array<number | string>
 ) {
-  const tokenOperatorContract = await TokenOperatorContract(adminWallet);
+  const tokenOperatorContract = TokenOperatorContract(adminWallet);
 
   const res = await tokenOperatorContract.batchMintPenalties(
     memberAddresses.map((orgAddress) => getAddress(orgAddress)),

@@ -42,7 +42,7 @@ export default function RequestAdminPage() {
 
       <List<IRequest>
         data={requests}
-        fields={["requester.organization.name:organization", "type", "status"]}
+        fields={["requester.organization.name:member", "type", "status"]}
         showHandler={setRequest2Show}
       />
 
@@ -50,7 +50,7 @@ export default function RequestAdminPage() {
         <ViewPopup<IRequest>
           title="Request Detail"
           data={request2Show}
-          fields={["id", "status", "requester.organization.name:organization", "type"]}
+          fields={["requester.organization.name:member", "status", "type", "amount"]}
           closeHandler={setRequest2Show}
           actionText={["Reject:red", "Approve"]}
           actionHandler={[async () => setIsConfirm("reject"), async () => setIsConfirm("approve")]}

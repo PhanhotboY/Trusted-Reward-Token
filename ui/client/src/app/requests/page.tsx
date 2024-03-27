@@ -23,7 +23,7 @@ export default function RequestPage() {
     };
     fetchRequests();
   }, [setRequests]);
-  console.log(requests);
+
   return (
     <div className="px-5 py-3 relative min-h-full">
       <PageTitle>Requests</PageTitle>
