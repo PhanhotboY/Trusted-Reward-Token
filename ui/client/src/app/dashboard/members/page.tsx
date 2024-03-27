@@ -24,7 +24,15 @@ export default function MemberAdminPage() {
 
   const registerMemberHandler = async (data: any) => {
     setIsAddMember(false);
-    const res = await registerMember(data);
+    const res = await toast.promise(registerMember(data), {
+      pending: "Registering member...",
+      success: "Member registered",
+      error: {
+        render({ data }: { data: Error }) {
+          return data.message;
+        },
+      },
+    });
     console.log("registed member: ", res);
     setMembers([...members, res.metadata]);
   };
@@ -35,7 +43,7 @@ export default function MemberAdminPage() {
 
       <List<IMemberDetails>
         data={members}
-        fields={["email", "fullName", "createdAt"]}
+        fields={["organization.name", "balance.reputationToken:reputation", "createdAt"]}
         showHandler={(item) => {
           setMember2Show(item);
         }}
@@ -65,7 +73,7 @@ export default function MemberAdminPage() {
         <ViewPopup<IMemberDetails>
           title="Member Detail"
           data={member2Show}
-          fields={["orgId", "email", "location", "organization.size", "createdAt"]}
+          fields={["organization.name", "email", "location", "organization.size", "createdAt"]}
           closeHandler={() => {
             setMember2Show(null);
           }}

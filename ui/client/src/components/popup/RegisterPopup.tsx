@@ -41,6 +41,16 @@ export default function RegisterPopup<T>({
     try {
       await actionHandler(data);
       closeHandler();
+      setName("");
+      setSize(MEMBER.SIZE.SMALL);
+      setLocation("");
+      setEmail("");
+      setPassword("");
+      setFullName("");
+      setUsername("");
+      setUsernameError("");
+      setPasswordError("");
+      setEmailError("");
     } catch (error: any) {
       const resError = error.response?.data;
       if (resError) {

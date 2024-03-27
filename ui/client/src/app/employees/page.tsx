@@ -108,6 +108,10 @@ export default function EmployeePage() {
               });
 
               setEmployees([...employees, res.metadata]);
+              setUsername("");
+              setPassword("");
+              setFullName("");
+              setEmail("");
             } catch (error) {
               console.log(error);
             }

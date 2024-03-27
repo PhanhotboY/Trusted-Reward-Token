@@ -80,6 +80,9 @@ export default function ReasonAdminPage() {
               });
               const { metadata: reasons } = await getReasons();
               setReasons(reasons);
+              setTitle("");
+              setValue(0);
+              setDescription("");
             } catch (e) {
               console.log(e);
             }
