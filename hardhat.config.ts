@@ -30,7 +30,7 @@ const config: HardhatUserConfig = {
       accounts: {
         mnemonic: process.env.MNEMONIC,
         initialIndex: 0,
-        count: 200,
+        count: 100,
       },
     },
     ganache: {
