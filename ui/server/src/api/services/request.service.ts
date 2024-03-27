@@ -9,6 +9,8 @@ import {
   mintRewardToken,
   mintRewardTokenForMember,
   getMemberEmployeeList,
+  getRewardBalanceOf,
+  syncBalanceForOrg,
 } from "../services";
 import { REQUEST } from "../constants";
 import { getReasonSubscription, uncommitReason } from "./reason.service";
@@ -193,10 +195,11 @@ async function processGrantingRequest(requestId: string, options?: IHandlerOptio
   const balanceBefore = await getFullBalanceOf(memberWallet.address);
   console.log("balanceBefore", balanceBefore);
 
-  const employeeList = await getMemberEmployeeList(member.id);
+  const employeeList = await getMemberEmployeeList(member.orgId!);
   if (!employeeList.length) {
     throw new BadRequestError("Member has no employee!");
   }
+
   const employeeAddresses = employeeList.reduce<Array<string>>(
     (employeeAddresses, employee) => [
       ...employeeAddresses,
@@ -204,27 +207,23 @@ async function processGrantingRequest(requestId: string, options?: IHandlerOptio
     ],
     []
   );
+
   const mintResult = await mintRewardTokenForMember(
     memberWallet.address,
     employeeAddresses,
     reason.value
   );
 
-  console.log("mint log: ", mintResult?.logs);
+  console.log("mint log: ", mintResult?.logs[0]);
 
   const balanceAfter = await getFullBalanceOf(memberWallet.address);
   console.log("balanceAfter", balanceAfter);
 
-  await updateBalance(
-    member.id,
-    Object.keys(balanceAfter).reduce(
-      (balance, token) => ({
-        ...balance,
-        [token]: +formatEther(balanceAfter[token as keyof typeof balanceAfter]),
-      }),
-      {}
-    )
-  );
+  const rewardAfter = await getRewardBalanceOf(memberWallet.address);
+  console.log("reward token balance: ", rewardAfter);
+
+  await syncBalanceForOrg(member.orgId!);
+
   const processedRequest = await updateRequest(request.id, {
     status: REQUEST.STATUS.APPROVED,
     message: options?.message,
@@ -256,6 +255,8 @@ export async function requestHandler({
   op: keyof typeof handleRequestMethod;
   options?: IHandlerOptions;
 }) {
+  console.log("op: ", op);
+  console.log("options: ", options);
   if (!Object.keys(handleRequestMethod).includes(op))
     throw new BadRequestError("Invalid operation!");
 

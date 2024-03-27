@@ -87,7 +87,7 @@ function getRequestQuery(filter?: WhereOptions<IRequestAttributes>, options?: IQ
         as: "reason",
       },
     ],
-  }).catch(errorHandler);
+  }).catch(errorHandler) as Promise<Array<RequestModel & IRequestAttributes>>;
 }
 
 /**

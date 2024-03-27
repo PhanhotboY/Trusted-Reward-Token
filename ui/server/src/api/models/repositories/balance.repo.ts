@@ -10,8 +10,12 @@ export async function createBalance(userId: string, transaction?: Transaction) {
   return await BalanceModel.create({ userId }, { transaction });
 }
 
-export async function updateBalance(userId: string, balance: IBalanceCreationAttributes) {
-  return await BalanceModel.update({ ...balance, userId }, { where: { userId } });
+export async function updateBalance(
+  userId: string,
+  balance: IBalanceCreationAttributes,
+  transaction?: Transaction
+) {
+  return await BalanceModel.update({ ...balance, userId }, { where: { userId }, transaction });
 }
 
 export const BalanceRepo = {

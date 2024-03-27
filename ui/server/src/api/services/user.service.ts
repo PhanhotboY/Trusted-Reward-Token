@@ -35,6 +35,7 @@ const userPublicFields: Array<keyof IUserResponse> = [
   "email",
   "orgId",
   "balance",
+  "hdWalletIndex",
   "createdAt",
 ];
 

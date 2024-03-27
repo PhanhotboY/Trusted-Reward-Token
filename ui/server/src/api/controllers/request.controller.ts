@@ -45,9 +45,7 @@ async function handleRequest(req: Request, res: Response) {
   return OK({
     res,
     message: "Handle request successfully!",
-    metadata:
-      (await RequestService.requestHandler({ requestId: req.params.requestId, ...req.body })) ||
-      true,
+    metadata: await RequestService.requestHandler({ requestId: req.params.requestId, ...req.body }),
     link: {
       self: {
         href: req.originalUrl,

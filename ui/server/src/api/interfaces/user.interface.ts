@@ -20,5 +20,13 @@ export interface IUserUniqueAttributes extends Pick<IUserAttributes, "id" | "ema
 export interface IUserResponse
   extends Pick<
     IUserDetails,
-    "id" | "username" | "fullName" | "email" | "role" | "orgId" | "balance" | "createdAt"
+    | "id"
+    | "username"
+    | "fullName"
+    | "email"
+    | "role"
+    | "orgId"
+    | "balance"
+    | "createdAt"
+    | "hdWalletIndex"
   > {}

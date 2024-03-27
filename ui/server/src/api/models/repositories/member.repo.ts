@@ -10,7 +10,7 @@ import { checkUUIDv4, isUUIDv4 } from "../../helpers";
 import { BadRequestError, InternalServerError } from "../../core/errors";
 
 export async function getMembers(filter?: WhereOptions<IUserAttributes>, options?: IQueryOptions) {
-  return (await getOrganizationQuery(filter, options).catch((err) => {
+  return (await getOrganizationQuery(filter, options).catch((err: any) => {
     throw new InternalServerError(err.errors?.[0]?.message || err.message);
   })) as (UserModel & IMemberDetails)[];
 }
