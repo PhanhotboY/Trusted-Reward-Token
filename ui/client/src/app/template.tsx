@@ -48,8 +48,8 @@ export default function RootTemplate({
   const logoutHandler = async () => {
     await toast.promise(
       (async () => {
+        logout();
         await logoutService();
-        await logout();
       })(),
       {
         pending: "Logging out...",
