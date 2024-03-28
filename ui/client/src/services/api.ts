@@ -28,6 +28,7 @@ export default class fetcher {
       },
       ...options,
     }).catch((error) => {
+      console.log("I am error");
       removeLocalItem("accessToken");
       removeLocalItem("refreshToken");
       removeLocalItem("user");

@@ -40,12 +40,21 @@ export default function DataList<T extends { [key: string]: any }>({
             {fields.map((field, i) => {
               if (typeof getDisplayValue(data[0], field) === "undefined") return null;
 
+              const value = getDisplayValue(item, field)?.toString();
               return (
                 <span
-                  className={"truncate " + (i ? "w-[12%] text-center" : "p-2 grow text-start")}
+                  className={
+                    "truncate " +
+                    (i ? "w-[12%] text-center" : "p-2 grow text-start") +
+                    (value === "approved"
+                      ? " text-green-500"
+                      : value === "rejected"
+                      ? " text-red-500"
+                      : "")
+                  }
                   key={i}
                 >
-                  {getDisplayValue(item, field)?.toString() || "-"}
+                  {value || "-"}
                 </span>
               );
             })}

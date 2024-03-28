@@ -76,8 +76,12 @@ export default function RootTemplate({
         </Link>
 
         <div className="flex">
-          {user?.role !== USER.ROLE.ADMIN && (
-            <Balance rewardToken={0} penaltyToken={0} reputationToken={0} />
+          {user?.balance && (
+            <Balance
+              rewardToken={user.balance.rewardToken}
+              penaltyToken={user.balance.penaltyToken}
+              reputationToken={user.balance.reputationToken}
+            />
           )}
 
           <div className="account relative overflow-hidden hover:overflow-visible">

@@ -9,8 +9,8 @@ const getReason = async (reasonId: string) => {
   return fetcher.get<IReason>(`/reasons/${reasonId}`);
 };
 
-const submitReason = async (reasonId: string) => {
-  return fetcher.post<string>(`/reasons/${reasonId}`);
+const submitReason = async (reasonId: string, message?: string) => {
+  return fetcher.post<string>(`/reasons/${reasonId}`, { message });
 };
 
 const subscribeReason = async (reasonId: string) => {

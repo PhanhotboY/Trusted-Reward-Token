@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 
 import List from "@/src/components/List";
 import PageTitle from "@/src/components/PageTitle";
-import { ViewPopup } from "@/src/components/popup";
+import { ConfirmPopup, ViewPopup } from "@/src/components/popup";
 import { redeemSwag } from "@/src/services/swag.service";
 import { useSwag } from "@/src/contexts/AppContext";
 import { useUser } from "@/src/contexts";
@@ -14,6 +14,7 @@ import { USER } from "@/src/constant";
 
 export default function SwagPage() {
   const [swag2Show, setSwag2Show] = useState<ISwag | null>(null);
+  const [isConfirm, setIsConfirm] = useState<boolean>(false);
 
   const { user, setUser } = useUser();
   const { swags, setSwags } = useSwag();
@@ -33,10 +34,23 @@ export default function SwagPage() {
             setSwag2Show(null);
           }}
           actionText={user?.role === USER.ROLE.MEMBER ? "Redeem" : ""}
+          actionHandler={async () => setIsConfirm(true)}
+        />
+      )}
+
+      {isConfirm && (
+        <ConfirmPopup
+          title="Redeem Swag"
+          alert="Are you sure you want to redeem this swag?"
+          closeHandler={() => {
+            setIsConfirm(false);
+          }}
+          actionText="Redeem"
           actionHandler={async () => {
+            setIsConfirm(false);
             setSwag2Show(null);
             try {
-              await toast.promise(redeemSwag(swag2Show.id), {
+              const res = await toast.promise(redeemSwag(swag2Show!.id), {
                 pending: "Redeeming Swag...",
                 success: "Swag Redeemed!",
                 error: {
@@ -45,6 +59,8 @@ export default function SwagPage() {
                   },
                 },
               });
+              console.log("member: ", res.metadata);
+              setUser(res.metadata);
             } catch (error) {
               console.error(error);
             }

@@ -15,15 +15,18 @@ export default function SubscriptionPage() {
   const [reason2Show, setReason2Show] = useState<ISubscription | null>(null);
   const [isConfirm, setIsConfirm] = useState<"unsubscribe" | "submit" | null>(null);
 
-  const actionHandler = async (action: "unsubscribe" | "submit") => {
+  const actionHandler = async (action: "unsubscribe" | "submit", message?: string) => {
     setIsConfirm(null);
-    if (!reason2Show) return toast.error("No reason to unsubscribe");
+    if (!reason2Show) {
+      toast.error("No reason to unsubscribe");
+      return;
+    }
 
     try {
       await toast.promise(
         action === "unsubscribe"
           ? unsubscribeReason(reason2Show.reasonId)
-          : submitReason(reason2Show.reasonId),
+          : submitReason(reason2Show.reasonId, message),
         {
           pending: `${isConfirm} Reason...`,
           success: `${isConfirm} reason successfully!`,
@@ -92,8 +95,9 @@ export default function SubscriptionPage() {
           title={`Confirm ${isConfirm} Reason`}
           alert={`Are you sure you want to ${isConfirm} this reason?`}
           closeHandler={() => setIsConfirm(null)}
+          includeMessage={isConfirm === "submit"}
           actionText={isConfirm + (isConfirm === "unsubscribe" ? ":red" : "")}
-          actionHandler={async () => await actionHandler(isConfirm)}
+          actionHandler={async (message?: string) => await actionHandler(isConfirm, message)}
         />
       )}
     </div>

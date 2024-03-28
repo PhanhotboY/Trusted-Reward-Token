@@ -8,15 +8,15 @@ export default function Balance({
   return (
     <div className="flex items-center">
       <div className="mr-3">
-        <span className={tokenStyle + "bg-green-500"}>RWT</span>
+        <span className={tokenStyle + "bg-green-500 aspect-square"}>REW</span>
         <span>{rewardToken || 0}</span>
       </div>
       <div className="mr-3">
-        <span className={tokenStyle + "bg-red-500"}>PET</span>
+        <span className={tokenStyle + "bg-red-500"}>PEN</span>
         <span>{penaltyToken || 0}</span>
       </div>
       <div className="mr-3">
-        <span className={tokenStyle + "bg-blue-500"}>RET</span>
+        <span className={tokenStyle + "bg-blue-500"}>REP</span>
         <span>{reputationToken || 0}</span>
       </div>
     </div>

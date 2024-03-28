@@ -1,4 +1,5 @@
 import { ISwag } from "../interfaces/swag.interface";
+import { IUserDetails } from "../interfaces/user.interface";
 import fetcher from "./api";
 
 const getSwags = async () => {
@@ -10,7 +11,7 @@ const getSwag = async (swagId: string) => {
 };
 
 const redeemSwag = async (swagId: string) => {
-  return fetcher.post<string>(`/swags/${swagId}`);
+  return fetcher.post<IUserDetails>(`/swags/${swagId}`);
 };
 
 const createSwag = async (data: any) => {
