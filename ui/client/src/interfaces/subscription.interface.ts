@@ -1,8 +1,8 @@
 import { IReason } from "./reason.interface";
-import { IUserDetails } from "./user.interface";
+import { IMemberDetails } from "./member.interface";
 
 export interface ISubscription {
-  subscriber: IUserDetails;
+  subscriber: IMemberDetails;
   reason: IReason;
   isCommitted: boolean;
   description: string;

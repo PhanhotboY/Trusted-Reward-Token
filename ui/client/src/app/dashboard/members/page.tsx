@@ -73,7 +73,13 @@ export default function MemberAdminPage() {
         <ViewPopup<IMemberDetails>
           title="Member Detail"
           data={member2Show}
-          fields={["organization.name", "email", "location", "organization.size", "createdAt"]}
+          fields={[
+            "organization.name",
+            "email",
+            "organization.location",
+            "organization.size",
+            "createdAt",
+          ]}
           closeHandler={() => {
             setMember2Show(null);
           }}

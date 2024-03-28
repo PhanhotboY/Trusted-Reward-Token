@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
-import { ethers, parseEther } from "ethers";
-import { Sequelize, Transaction, WhereOptions } from "sequelize";
+import { parseEther } from "ethers";
+import { Transaction, WhereOptions } from "sequelize";
 
 import { MEMBER, USER } from "../constants";
 import { checkUUIDv4, isUUIDv4 } from "../helpers";
@@ -37,7 +37,6 @@ const memberSensitiveFields: Array<keyof IMemberDetails> = [
   "isVerified",
   "deletedAt",
   "password",
-  "role",
 ];
 const memberPublicFields: Array<keyof IMemberDetails> = [
   "id",
@@ -57,8 +56,15 @@ export async function getMemberList(
   return getReturnArray(orgList);
 }
 
-export async function getMemberDetails(memberId: string, isVerified = true) {
-  const memberDetails = await findMemberById(memberId, isVerified);
+export async function getMemberDetails(id: string, isVerified = true) {
+  const memberDetails = await findMemberById(id, isVerified);
+  if (!memberDetails) throw new BadRequestError("Member not found!");
+
+  return getReturnData<IMemberDetails>(memberDetails, { excludes: memberSensitiveFields });
+}
+
+export async function getMemberByMemberId(memberId: string) {
+  const memberDetails = await findMemberByMemberId(memberId);
   if (!memberDetails) throw new BadRequestError("Member not found!");
 
   return getReturnData<IMemberDetails>(memberDetails, { excludes: memberSensitiveFields });
@@ -72,8 +78,7 @@ export async function getMemberRequestList(
 }
 
 export async function getMemberEmployeeList(memberId: string, options?: IQueryOptions) {
-  const member = await findMemberByMemberId(memberId);
-  if (!member) throw new BadRequestError("Member not found!");
+  const member = await getMemberByMemberId(memberId);
 
   const employeeList = await getUserList(
     { orgId: member.orgId, role: USER.ROLE.EMPLOYEE },
@@ -83,10 +88,8 @@ export async function getMemberEmployeeList(memberId: string, options?: IQueryOp
   return getReturnArray(employeeList);
 }
 
-export async function getMember(memberId: string) {
-  const memberDetails = await (isUUIDv4(memberId)
-    ? findMemberById(memberId)
-    : findMemberByName(memberId));
+export async function getMember(id: string) {
+  const memberDetails = await (isUUIDv4(id) ? findMemberById(id) : findMemberByName(id));
 
   if (!memberDetails) throw new BadRequestError("Member not found!");
 
@@ -102,9 +105,9 @@ export async function getMemberSubscriptionList(
   return getReturnArray(subscriptions);
 }
 
-export async function registerEmployee(memberId: string, data: IUserCreationAttributes) {
-  checkUUIDv4(memberId);
-  const member = await findMemberById(memberId);
+export async function registerEmployee(id: string, data: IUserCreationAttributes) {
+  checkUUIDv4(id);
+  const member = await findMemberById(id);
   if (!member) throw new UnauthorizedError("Member not found!");
 
   const foundUser = await findUserBy({ email: data.email, username: data.username }, true, false);
@@ -312,6 +315,7 @@ export async function removeMember(memberId: string) {
 export const MemberService = {
   getMemberList,
   getMemberDetails,
+  getMemberByMemberId,
   getMemberRequestList,
   getMemberEmployeeList,
   getMember,

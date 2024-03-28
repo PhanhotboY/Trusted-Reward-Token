@@ -13,6 +13,7 @@ export interface IRequest {
   swagId: string;
   reasonId: string;
   status: Unionize<typeof REQUEST.STATUS>;
+  message: string;
   completedAt: Date;
   createdAt: Date;
   updatedAt: Date;

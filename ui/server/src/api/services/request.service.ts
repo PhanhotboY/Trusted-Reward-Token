@@ -11,6 +11,7 @@ import {
   getMemberEmployeeList,
   getRewardBalanceOf,
   syncBalanceForOrg,
+  syncBalance,
 } from "../services";
 import { REQUEST } from "../constants";
 import { getReasonSubscription, uncommitReason } from "./reason.service";
@@ -116,18 +117,20 @@ async function processRedeemRequest(requestId: string, options?: IHandlerOptions
   if (request.status !== REQUEST.STATUS.PENDING) {
     throw new BadRequestError("Request already processed");
   }
+
+  const member = await getMemberDetails(request.requesterId);
   if (!options?.action || options.action === "reject") {
     console.log("rejecting request");
     const processedRequest = await updateRequest(request.id, {
       status: REQUEST.STATUS.REJECTED,
       message: options?.message,
     });
+    await syncBalance(member);
+
     return getReturnData(processedRequest);
   }
 
-  const member = await getMemberDetails(request.requesterId);
   const swag = await getSwag(request.swagId || "");
-
   const memberWallet = getHDNodeWallet(member.hdWalletIndex);
 
   try {
@@ -139,29 +142,22 @@ async function processRedeemRequest(requestId: string, options?: IHandlerOptions
         status: REQUEST.STATUS.REJECTED,
         message: "Insufficient balance",
       });
+      await syncBalance(member);
+
       return getReturnData(processedRequest);
     }
 
-    const burnResult = await burnRewardToken(memberWallet.address, swag.value, "0x0");
-    console.log("burn log: ", burnResult?.logs);
-
-    const balanceAfter = await getFullBalanceOf(memberWallet.address);
-    console.log("balanceAfter", balanceAfter);
-
-    await updateBalance(
-      member.id,
-      Object.keys(balanceAfter).reduce(
-        (balance, token) => ({
-          ...balance,
-          [token]: +formatEther(balanceAfter[token as keyof typeof balanceAfter]),
-        }),
-        {}
-      )
+    const burnResult = await burnRewardToken(
+      memberWallet.address,
+      swag.value,
+      Buffer.from("Redeem Swag")
     );
+    console.log("burn log: ", burnResult?.logs[0]);
   } catch (err) {
     console.error(err);
     throw new InternalServerError("Error processing request");
   }
+  await syncBalance(member);
 
   const processedRequest = await updateRequest(request.id, {
     status: REQUEST.STATUS.APPROVED,

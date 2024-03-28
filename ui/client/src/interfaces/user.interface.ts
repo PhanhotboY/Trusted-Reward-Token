@@ -21,15 +21,6 @@ export interface IJWTPayload {
   role: IUserDetails["role"];
 }
 
-export interface IOrganizationDetails {
-  id: string;
-  name: string;
-  size: Unionize<typeof MEMBER.SIZE>;
-  location: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 export interface IUserDetails {
   id: string;
   fullName: string;
@@ -39,8 +30,9 @@ export interface IUserDetails {
   orgId?: string;
   createdAt: string;
   updatedAt: string;
-  organization?: IOrganizationDetails;
   balance?: {
+    rewardToken: number;
+    penaltyToken: number;
     reputationToken: number;
   };
 }

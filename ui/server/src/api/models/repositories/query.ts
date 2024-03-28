@@ -28,7 +28,7 @@ function getOrganizationQuery(filter?: WhereOptions<IUserAttributes>, options?: 
   if ((<IUserAttributes>filter)?.orgId && !isUUIDv4((<IUserAttributes>filter).orgId!))
     throw new BadRequestError("Invalid organization id!");
 
-  const { limit, order = "DESC", orderBy = "createdAt", page = 0, exclude = [] } = options || {};
+  const { limit, order = "DESC", orderBy = "updatedAt", page = 0, exclude = [] } = options || {};
   console.log("filter org: ", filter);
   console.log("options: ", options);
 
@@ -47,7 +47,7 @@ function getOrganizationQuery(filter?: WhereOptions<IUserAttributes>, options?: 
  */
 function getRequestQuery(filter?: WhereOptions<IRequestAttributes>, options?: IQueryOptions) {
   filter && checkUUID<IRequestAttributes>(filter, "requesterId");
-  const { limit = 12, page = 0, order = "DESC", orderBy = "createdAt" } = options || {};
+  const { limit = 12, page = 0, order = "DESC", orderBy = "updatedAt" } = options || {};
 
   return RequestModel.findAll({
     where: {

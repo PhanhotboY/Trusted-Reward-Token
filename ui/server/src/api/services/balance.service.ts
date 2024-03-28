@@ -1,12 +1,14 @@
 import { getReturnData } from "../utils";
 import { NotFoundError } from "../core/errors";
 import { BalanceRepo as Br } from "../models/repositories";
-import { IBalanceAttributes, IBalanceCreationAttributes } from "../interfaces/balance.interface";
+import { IBalanceCreationAttributes } from "../interfaces/balance.interface";
 import { getFullBalanceOf } from "./token.service";
-import { getMemberDetails, getMemberEmployeeList } from "./member.service";
+import { getMemberByMemberId, getMemberEmployeeList } from "./member.service";
 import { formatEther } from "ethers";
 import { pgInstance } from "../../db/init.postgresql";
 import { Transaction } from "sequelize";
+import { getHDNodeWallet } from "../utils/hdWallet";
+import { IUserDetails } from "../interfaces/user.interface";
 
 async function getFullBalance(id: string) {
   const balance = await Br.findBalanceByUserId(id);
@@ -42,11 +44,12 @@ async function updateBalance(
   return await Br.updateBalance(userId, balance, transaction);
 }
 
-async function syncBalance(userId: string, transaction?: Transaction) {
-  const balance = await getFullBalanceOf(userId);
+async function syncBalance(user: IUserDetails, transaction?: Transaction) {
+  const wallet = getHDNodeWallet(user.hdWalletIndex);
+  const balance = await getFullBalanceOf(wallet.address);
 
   return await updateBalance(
-    userId,
+    user.id,
     Object.keys(balance).reduce<IBalanceCreationAttributes>(
       (acc, key) => ({
         ...acc,
@@ -59,15 +62,15 @@ async function syncBalance(userId: string, transaction?: Transaction) {
 }
 
 async function syncBalanceForOrg(orgId: string, transaction?: Transaction) {
-  const member = await getMemberDetails(orgId);
+  const member = await getMemberByMemberId(orgId);
   const employees = await getMemberEmployeeList(orgId);
 
   const sequelize = pgInstance.getSequelize();
   await sequelize.transaction(async (tx) => {
     try {
-      await syncBalance(member.id, transaction || tx);
+      await syncBalance(member, transaction || tx);
       for (const emp of employees) {
-        await syncBalance(emp.id, transaction || tx);
+        await syncBalance(emp, transaction || tx);
       }
     } catch (error) {
       transaction ? transaction.rollback() : tx.rollback();

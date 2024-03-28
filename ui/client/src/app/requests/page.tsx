@@ -38,7 +38,7 @@ export default function RequestPage() {
         <ViewPopup<IRequest>
           title="Request Detail"
           data={request2Show}
-          fields={["id", "status", "requester.organization.name", "type"]}
+          fields={["requester.organization.name", "status", "amount", "type", "message"]}
           closeHandler={setRequest2Show}
           actionText="Withdraw:red"
           actionHandler={async () => {
