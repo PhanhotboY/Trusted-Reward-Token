@@ -37,7 +37,6 @@ const memberSensitiveFields: Array<keyof IMemberDetails> = [
   "isVerified",
   "deletedAt",
   "password",
-  "role",
 ];
 const memberPublicFields: Array<keyof IMemberDetails> = [
   "id",

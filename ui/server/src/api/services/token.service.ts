@@ -85,7 +85,7 @@ async function burnRewardToken(address: string, amount: number | string, data?: 
   const res = await tokenOperatorContract.burnRewards(
     getAddress(address),
     parseEther(amount.toString()),
-    data || "0x0"
+    data || Buffer.from("")
   );
   return await res.wait();
 }
