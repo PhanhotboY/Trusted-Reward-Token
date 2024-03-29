@@ -34,10 +34,10 @@ export const getAllReasons = async (
     where: filter,
     ...(options
       ? {
-          offset: caculateOffset(page, limit),
-          limit: +limit || 2,
-          order: [[orderBy, order]],
-        }
+        offset: caculateOffset(page, limit),
+        limit: +limit || 2,
+        order: [[orderBy, order]],
+      }
       : {}),
   });
 };
@@ -70,12 +70,12 @@ export const getReasonSubscription = async (memberId: string, reasonId: string) 
 export const getReasonSubscriptionList = async ({
   memberId,
   ...filter
-}: { memberId: SubscriptionModel["userId"] } & Filterable<ISubscriptionAttributes>) => {
-  checkUUIDv4(memberId);
+}: { memberId?: SubscriptionModel["userId"] } & Filterable<ISubscriptionAttributes>) => {
+  memberId && checkUUIDv4(memberId);
 
   return await SubscriptionModel.findAll({
     where: {
-      userId: memberId,
+      ...(memberId ? { userId: memberId } : {}),
       ...filter,
     },
     include: [

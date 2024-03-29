@@ -100,13 +100,12 @@ export async function getMemberSubscriptionList(
   memberId: string,
   filter?: Partial<ISubscriptionAttributes>
 ) {
-  const subscriptions = await getReasonSubscriptionList(memberId, filter);
+  const subscriptions = await getReasonSubscriptionList({ memberId, ...filter });
 
   return getReturnArray(subscriptions);
 }
 
 export async function registerEmployee(id: string, data: IUserCreationAttributes) {
-  checkUUIDv4(id);
   const member = await findMemberById(id);
   if (!member) throw new UnauthorizedError("Member not found!");
 
