@@ -27,7 +27,7 @@ export default function EmployeePage() {
   }, [params.memberId, setEmployees]);
 
   return (
-    <div className="px-5 py-3 relative min-h-full">
+    <div className="page-container">
       <PageTitle>Employees</PageTitle>
 
       <List<IUserDetails>

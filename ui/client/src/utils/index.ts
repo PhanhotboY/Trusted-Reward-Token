@@ -90,8 +90,14 @@ const getDisplayValue = <T>(data: T, selector: Paths<T>) => {
     if (value !== undefined) break;
   }
 
-  return value;
+  return value?.toString() || '';
 };
+
+const isDate = (str: string | undefined | null) => {
+  if (!str) return false;
+  let [y, M, d, h, m, s] = str.toString().split(/[- : T Z]/);
+  return (!!y && +M <= 12 && +d <= 31 && +h <= 24 && +m <= 60 && +s <= 60);
+}
 
 export {
   isNullish,
@@ -104,4 +110,5 @@ export {
   removeLocalItem,
   getDisplayAlias,
   getDisplayValue,
+  isDate
 };

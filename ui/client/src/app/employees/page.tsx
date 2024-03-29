@@ -57,12 +57,12 @@ export default function EmployeePage() {
   }, [user?.role, user?.orgId, setEmployees]);
 
   return (
-    <div className="px-5 py-3 relative min-h-full">
+    <div className="page-container">
       <PageTitle>Employees</PageTitle>
 
       <List<IUserDetails>
         data={employees}
-        fields={["fullName:full name", "balance.reputationToken:reputation"]}
+        fields={["fullName:full name", "balance.reputationToken:reputation", "createdAt:joined"]}
         showHandler={(item) => {
           setEmployee2Show(item);
         }}
@@ -84,7 +84,13 @@ export default function EmployeePage() {
         <ViewPopup<IUserDetails>
           title="Request Detail"
           data={employee2Show}
-          fields={["id", "fullName", "email", "createdAt"]}
+          fields={[
+            "id",
+            "fullName:full name",
+            "email",
+            "createdAt:joined",
+            "balance.reputationToken:reputation",
+          ]}
           closeHandler={setEmployee2Show}
         />
       )}

@@ -28,7 +28,7 @@ export default function SwagAdminPage() {
   const setData = { name: setTitle, value: setValue, description: setDescription };
 
   return (
-    <div className="px-5 py-3 relative min-h-full">
+    <div className="page-container">
       <PageTitle>Swags</PageTitle>
 
       <List<any>

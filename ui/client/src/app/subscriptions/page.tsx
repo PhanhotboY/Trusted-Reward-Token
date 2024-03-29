@@ -58,7 +58,7 @@ export default function SubscriptionPage() {
   }, []);
 
   return (
-    <div className="px-5 py-3 relative min-h-full">
+    <div className="page-container">
       <PageTitle>Subscriptions</PageTitle>
 
       <List<ISubscription>
@@ -74,9 +74,9 @@ export default function SubscriptionPage() {
           fields={[
             "subscriber.organization.name:organization",
             "reason.title",
-            "createdAt",
+            "createdAt:subscribed",
             "deadline",
-            "committedAt",
+            "committedAt:committed",
             "reason.description",
           ]}
           closeHandler={() => {
