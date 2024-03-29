@@ -15,16 +15,16 @@ export default function MemberPage() {
   const { members, setMembers } = useMember();
 
   return (
-    <div className="px-5 py-3 relative min-h-full">
+    <div className="page-container">
       <PageTitle>Members</PageTitle>
 
       <List<IMemberDetails>
         data={members.filter((m) => m.orgId !== user?.orgId)}
         fields={[
-          "organization.name:organization",
-          "balance.rewardToken:reward",
-          "balance.penaltyToken:penalty",
+          "organization.name:name",
+          "organization.location",
           "balance.reputationToken:reputation",
+          "createdAt:joined",
         ]}
         showHandler={(item) => {
           router.push(`/members/${item.orgId}/employees`);

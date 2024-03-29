@@ -1,5 +1,5 @@
 import { Transaction } from "sequelize";
-import { createRequest } from ".";
+import { createRequest, getRequestList } from ".";
 import { pgInstance } from "../../db/init.postgresql";
 import { BadRequestError } from "../core/errors";
 import { checkUUIDv4 } from "../helpers";
@@ -21,8 +21,6 @@ export const getReasonList = async () => {
 };
 
 export const getReasonById = async (reasonId: string) => {
-  checkUUIDv4(reasonId);
-
   const reason = await ReasonRepo.getReason(reasonId);
   if (!reason) throw new BadRequestError("Reason not found!");
 
@@ -42,12 +40,9 @@ export const getReasonSubscription = async (memberId: string, reasonId: string) 
 };
 
 export const getReasonSubscriptionList = async (
-  memberId: string,
-  filter?: Partial<ISubscriptionAttributes>
+  filter: { memberId?: string } & Partial<ISubscriptionAttributes>
 ) => {
-  checkUUIDv4(memberId);
-
-  const subscriptions = await ReasonRepo.getReasonSubscriptionList({ memberId, ...filter });
+  const subscriptions = await ReasonRepo.getReasonSubscriptionList(filter);
   return getReturnArray(subscriptions);
 };
 
@@ -65,9 +60,6 @@ export const subscribeReason = async (memberId: string, reasonId: string) => {
 };
 
 export const unsubscribeReason = async (memberId: string, reasonId: string) => {
-  checkUUIDv4(memberId);
-  checkUUIDv4(reasonId);
-
   return await ReasonRepo.unsubscribeReason(memberId, reasonId);
 };
 
@@ -110,7 +102,9 @@ export const uncommitReason = async (
 };
 
 export const deleteReason = async (reasonId: string) => {
-  checkUUIDv4(reasonId);
+  const subscriptions = await getReasonSubscriptionList({ reasonId });
+  const requests = await getRequestList({ reasonId });
+  if (requests.length || subscriptions.length) throw new BadRequestError("Reason cannot be deleted!");
 
   return await ReasonRepo.deleteReason(reasonId);
 };

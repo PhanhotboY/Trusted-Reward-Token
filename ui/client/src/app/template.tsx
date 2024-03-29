@@ -75,7 +75,7 @@ export default function RootTemplate({
       <header className="h-20 fixed top-0 inset-x-0 flex justify-between px-10 bg-violet-950 text-white items-center z-50">
         <Link
           className="block h-full text-2xl text-center p-5 font-bold"
-          href={user?.role === USER.ROLE.ADMIN ? "/dashboard/requests" : "/"}
+          href={user?.role === USER.ROLE.ADMIN ? "/dashboard" : "/"}
         >
           {pathname.split("/").reverse()[0].toUpperCase() || "DASHBOARD"}
         </Link>
@@ -132,7 +132,7 @@ export default function RootTemplate({
           </ul>
         </nav>
 
-        <div className="h-full grow overflow-auto">{children}</div>
+        <div className="h-full grow overflow-hidden">{children}</div>
       </main>
     </>
   );

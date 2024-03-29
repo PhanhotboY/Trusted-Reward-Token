@@ -34,7 +34,7 @@ const removeNullishElements = (arr: Array<any>) => {
   arr.forEach((ele) => {
     if (!isNullish(ele)) {
       const result = removeNestedNullish(ele);
-      if (result instanceof Object && isEmptyObj(result)) return;
+      if (result?.constructor.name === 'Object' && isEmptyObj(result)) return;
 
       final[final.length] = result;
     }
@@ -50,7 +50,7 @@ const removeNullishAttributes = (obj: Object) => {
     if (!isNullish(obj[key])) {
       const result = removeNestedNullish<any>(obj[key]);
 
-      if (result instanceof Object && isEmptyObj(result)) return;
+      if (result?.constructor.name === 'Object' && isEmptyObj(result)) return;
 
       final[key] = result;
     }
@@ -60,8 +60,8 @@ const removeNullishAttributes = (obj: Object) => {
 };
 
 const removeNestedNullish = <T>(any: any): T => {
-  if (any instanceof Array) return removeNullishElements(any as Array<any>) as T;
-  if (any instanceof Object) return removeNullishAttributes(any as Object) as T;
+  if (Array.isArray(any)) return removeNullishElements(any as Array<any>) as T;
+  if (any?.constructor.name === 'Object') return removeNullishAttributes(any as Object) as T;
 
   return <T>any;
 };
