@@ -19,45 +19,47 @@ export default function List<T extends { [key: string]: any }>({
   deleteHandler?: VoidFunction;
 }) {
   return (
-    <div className="bg-white rounded-md pb-1">
-      <div className="flex items-center rounded-t-md border-b">
-        {deletable && (
-          <button
-            className="py-2 w-[5%] text-red-600 font-semibold hover:bg-slate-50 rounded-tl-md"
-            onClick={deleteHandler}
-          >
-            Del
-          </button>
-        )}
+    <div className="px-5 overflow-auto">
+      <div className="bg-white rounded-md pb-1">
+        <div className="flex items-center rounded-t-md border-b">
+          {deletable && (
+            <button
+              className="py-2 w-[5%] text-red-600 font-semibold hover:bg-slate-50 rounded-tl-md"
+              onClick={deleteHandler}
+            >
+              Del
+            </button>
+          )}
 
-        <div className="w-full flex items-center justify-between hover:cursor-pointer">
-          {fields.map((field, index) => {
-            if (typeof getDisplayValue(data[0], field) === "undefined") return null;
+          <div className="w-full flex items-center justify-between hover:cursor-pointer">
+            {fields.map((field, index) => {
+              if (typeof getDisplayValue(data[0], field) === "undefined") return null;
 
-            return (
-              <button
-                key={index}
-                className={
-                  (index ? "w-[12%]" : "grow text-start") +
-                  " text-center capitalize p-2 font-semibold hover:bg-slate-50 " +
-                  (index === fields.length - 1 ? "rounded-tr-md" : "")
-                }
-              >
-                {getDisplayAlias(field)} ▾{/* ▴ */}
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={index}
+                  className={
+                    (index ? "w-[12%]" : "grow text-start") +
+                    " text-center capitalize p-2 font-semibold hover:bg-slate-50 " +
+                    (index === fields.length - 1 ? "rounded-tr-md" : "")
+                  }
+                >
+                  {getDisplayAlias(field)} ▾{/* ▴ */}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
 
-      <DataList
-        fields={fields}
-        data={data}
-        deletable={deletable}
-        showHandler={showHandler}
-        selected2Delete={selected2Delete}
-        selectHandler={selectHandler}
-      />
+        <DataList
+          fields={fields}
+          data={data}
+          deletable={deletable}
+          showHandler={showHandler}
+          selected2Delete={selected2Delete}
+          selectHandler={selectHandler}
+        />
+      </div>
     </div>
   );
 }

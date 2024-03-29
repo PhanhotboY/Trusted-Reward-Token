@@ -1,5 +1,5 @@
 import { usePathname } from "next/navigation";
-import { getDisplayValue } from "../utils";
+import { getDisplayValue, isDate } from "../utils";
 
 export default function DataList<T extends { [key: string]: any }>({
   fields,
@@ -40,7 +40,8 @@ export default function DataList<T extends { [key: string]: any }>({
             {fields.map((field, i) => {
               if (typeof getDisplayValue(data[0], field) === "undefined") return null;
 
-              const value = getDisplayValue(item, field)?.toString();
+              const value = getDisplayValue(item, field);
+
               return (
                 <span
                   className={
@@ -54,7 +55,7 @@ export default function DataList<T extends { [key: string]: any }>({
                   }
                   key={i}
                 >
-                  {value || "-"}
+                  {isDate(value) ? new Date(value).toLocaleDateString() : value || "-"}
                 </span>
               );
             })}

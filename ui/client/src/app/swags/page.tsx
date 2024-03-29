@@ -20,7 +20,7 @@ export default function SwagPage() {
   const { swags, setSwags } = useSwag();
 
   return (
-    <div className="px-5 py-3 relative min-h-full">
+    <div className="page-container">
       <PageTitle>Swags</PageTitle>
 
       <List<any> data={swags} fields={["name", "value"]} showHandler={setSwag2Show} />

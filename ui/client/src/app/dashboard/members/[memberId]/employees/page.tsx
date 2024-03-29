@@ -26,12 +26,12 @@ export default function EmployeePage() {
   }, [params.memberId, setEmployees]);
 
   return (
-    <div className="px-5 py-3 relative min-h-full">
+    <div className="page-container">
       <PageTitle>Employees</PageTitle>
 
       <List<IUserDetails>
         data={employees}
-        fields={["fullName:full name", "balance.reputationToken:reputation"]}
+        fields={["fullName:full name", "balance.reputationToken:reputation", "createdAt:joined"]}
         showHandler={setEmployee2Show}
       />
 

@@ -38,12 +38,12 @@ export default function MemberAdminPage() {
   };
 
   return (
-    <div className="px-5 py-3 relative min-h-full">
+    <div className="page-container">
       <PageTitle>Members</PageTitle>
 
       <List<IMemberDetails>
         data={members}
-        fields={["organization.name", "balance.reputationToken:reputation", "createdAt"]}
+        fields={["organization.name", "balance.reputationToken:reputation", "createdAt:joined"]}
         showHandler={(item) => {
           setMember2Show(item);
         }}
@@ -78,7 +78,7 @@ export default function MemberAdminPage() {
             "email",
             "organization.location",
             "organization.size",
-            "createdAt",
+            "createdAt:joined",
           ]}
           closeHandler={() => {
             setMember2Show(null);

@@ -19,7 +19,7 @@ export default function ReasonPage() {
   const { user, setUser } = useUser();
 
   return (
-    <div className="px-5 py-3 relative min-h-full">
+    <div className="page-container">
       <PageTitle>Reasons</PageTitle>
 
       <List<any> data={reasons} fields={["title", "value"]} showHandler={setReason2Show} />

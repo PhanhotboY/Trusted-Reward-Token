@@ -37,12 +37,12 @@ export default function RequestAdminPage() {
   };
 
   return (
-    <div className="px-5 py-3 relative min-h-full">
+    <div className="page-container">
       <PageTitle>Requests</PageTitle>
 
       <List<IRequest>
         data={requests}
-        fields={["requester.organization.name:member", "type", "status"]}
+        fields={["requester.organization.name:member", "type", "status", "completedAt:completed"]}
         showHandler={setRequest2Show}
       />
 
@@ -50,7 +50,15 @@ export default function RequestAdminPage() {
         <ViewPopup<IRequest>
           title="Request Detail"
           data={request2Show}
-          fields={["requester.organization.name:member", "status", "type", "amount", "message"]}
+          fields={[
+            "reason.title:name||swag.name",
+            "type",
+            "requester.organization.name:member",
+            "amount:value",
+            "status",
+            "completedAt:completed",
+            "message",
+          ]}
           closeHandler={setRequest2Show}
           actionText={["Reject:red", "Approve"]}
           actionHandler={[async () => setIsConfirm("reject"), async () => setIsConfirm("approve")]}

@@ -25,7 +25,7 @@ export default function RequestPage() {
   }, [setRequests]);
 
   return (
-    <div className="px-5 py-3 relative min-h-full">
+    <div className="page-container">
       <PageTitle>Requests</PageTitle>
 
       <List<IRequest>
@@ -38,7 +38,15 @@ export default function RequestPage() {
         <ViewPopup<IRequest>
           title="Request Detail"
           data={request2Show}
-          fields={["requester.organization.name", "status", "amount", "type", "message"]}
+          fields={[
+            "reason.title:name||swag.name",
+            "type",
+            "requester.organization.name:member",
+            "amount:value",
+            "status",
+            "completedAt:completed",
+            "message",
+          ]}
           closeHandler={setRequest2Show}
           actionText="Withdraw:red"
           actionHandler={async () => {
