@@ -14,12 +14,12 @@ import {
   syncBalance,
 } from "../services";
 import { REQUEST } from "../constants";
-import { getReasonSubscription, uncommitReason } from "./reason.service";
+import { getReasonById, getReasonSubscription, uncommitReason } from "./reason.service";
 import { getHDNodeWallet } from "../utils/hdWallet";
 import { getReturnArray, getReturnData } from "../utils";
 import { IQueryOptions } from "../interfaces/query.interface";
 import { BadRequestError, InternalServerError } from "../core/errors";
-import { RequestRepo, deleteRequest, updateBalance, updateRequest } from "../models/repositories";
+import { RequestRepo, deleteRequest } from "../models/repositories";
 import { IRequestAttributes, IRequestCreationAttributes } from "../interfaces/request.interface";
 import { Transaction } from "sequelize";
 import { pgInstance } from "../../db/init.postgresql";
@@ -30,8 +30,13 @@ interface IHandlerOptions {
 }
 
 export async function getRequestList(
-  filter: { requesterId?: string; status?: string; type?: string } & Partial<IQueryOptions>
+  filter: { requesterId?: string; status?: string; type?: string, swagId?: string, reasonId?: string } & Partial<IQueryOptions>
 ) {
+  const { requesterId, swagId, reasonId } = filter;
+  requesterId && (await getMemberDetails(requesterId));
+  swagId && (await getSwag(swagId));
+  reasonId && (await getReasonById(reasonId));
+
   const requestList = await RequestRepo.getRequestList(filter, { ...filter });
 
   return getReturnArray(requestList);
@@ -65,8 +70,8 @@ export async function createRequest(
   const type = swagId
     ? REQUEST.TYPE.REDEEM
     : reasonId
-    ? REQUEST.TYPE.GRANTING
-    : REQUEST.TYPE.TRANSFER;
+      ? REQUEST.TYPE.GRANTING
+      : REQUEST.TYPE.TRANSFER;
 
   const objectId = {
     swagId: swagId || null,
@@ -124,7 +129,7 @@ async function processRedeemRequest(requestId: string, options?: IHandlerOptions
     const processedRequest = await updateRequest(request.id, {
       status: REQUEST.STATUS.REJECTED,
       message: options?.message,
-    });
+    }, true);
     await syncBalance(member);
 
     return getReturnData(processedRequest);
@@ -141,7 +146,7 @@ async function processRedeemRequest(requestId: string, options?: IHandlerOptions
       const processedRequest = await updateRequest(request.id, {
         status: REQUEST.STATUS.REJECTED,
         message: "Insufficient balance",
-      });
+      }, true);
       await syncBalance(member);
 
       return getReturnData(processedRequest);
@@ -162,7 +167,7 @@ async function processRedeemRequest(requestId: string, options?: IHandlerOptions
   const processedRequest = await updateRequest(request.id, {
     status: REQUEST.STATUS.APPROVED,
     message: options?.message,
-  });
+  }, true);
 
   return getReturnData(processedRequest);
 }
@@ -176,7 +181,7 @@ async function processGrantingRequest(requestId: string, options?: IHandlerOptio
     const processedRequest = await updateRequest(request.id, {
       status: REQUEST.STATUS.REJECTED,
       message: options?.message,
-    });
+    }, true);
     return getReturnData(processedRequest);
   }
 
@@ -223,7 +228,7 @@ async function processGrantingRequest(requestId: string, options?: IHandlerOptio
   const processedRequest = await updateRequest(request.id, {
     status: REQUEST.STATUS.APPROVED,
     message: options?.message,
-  });
+  }, true);
 
   return getReturnData(processedRequest);
 }
@@ -257,6 +262,14 @@ export async function requestHandler({
     throw new BadRequestError("Invalid operation!");
 
   return handleRequestMethod[op](requestId, options);
+}
+
+export async function updateRequest(id: string, data: Partial<IRequestCreationAttributes>, isCompleted = false) {
+  const updatedRequest = await RequestRepo.updateRequest(id, {
+    ...data,
+    completedAt: isCompleted ? new Date() : null,
+  });
+  return getReturnData(updatedRequest);
 }
 
 export const RequestService = {

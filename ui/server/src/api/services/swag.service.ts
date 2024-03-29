@@ -3,7 +3,7 @@ import { IQueryOptions } from "../interfaces/query.interface";
 import { swagRepo } from "../models/repositories/swag.repo";
 import { getReturnArray, getReturnData } from "../utils";
 import { ISWagCreationAttributes, ISwagAttributes } from "../interfaces/swag.interface";
-import { createRequest } from "./request.service";
+import { createRequest, getRequestList } from "./request.service";
 import { getMemberDetails, getUser, updateBalance } from ".";
 import { pgInstance } from "../../db/init.postgresql";
 
@@ -36,7 +36,9 @@ export async function updateSwag(id: string, data: ISWagCreationAttributes) {
 }
 
 export async function deleteSwag(id: string) {
-  await getSwag(id);
+  const requests = await getRequestList({ swagId: id });
+  if (requests.length) throw new BadRequestError("Swag cannot be deleted!");
+
   await swagRepo.deleteSwag(id);
   return true;
 }
@@ -48,7 +50,7 @@ export async function redeemSwag(userId: string, swagId: string) {
   if (member.balance.rewardToken < swag.value) throw new BadRequestError("Insufficient balance");
 
   const sequelize = pgInstance.getSequelize();
-  const request = await sequelize.transaction(async (transaction) => {
+  await sequelize.transaction(async (transaction) => {
     try {
       await updateBalance(
         member.id,
@@ -61,15 +63,14 @@ export async function redeemSwag(userId: string, swagId: string) {
         transaction
       );
 
-      const updatedMember = await getMemberDetails(userId);
-      return getReturnData(updatedMember);
     } catch (err) {
       await transaction.rollback();
       throw err;
     }
   });
 
-  return getReturnData(request);
+  const updatedMember = await getMemberDetails(userId);
+  return getReturnData(updatedMember);
 }
 
 export const swagService = {
