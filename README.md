@@ -30,20 +30,6 @@
 
 - [x] Token Operator
 
-- [ ] Worker Registry
+- [x] Backend
 
-- [ ] Work Order Registry
-
-- [ ] Trusted Execution Environment(TEE)
-
-- [ ] Backend
-
-  - Database models
-
-  - Authentication
-
-  - Services
-
-    -
-
-- [ ] Frontend
+- [x] Frontend
