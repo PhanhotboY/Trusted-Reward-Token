@@ -63,7 +63,15 @@ export default function SubscriptionPage() {
 
       <List<ISubscription>
         data={subscribedReasons}
-        fields={["reason.title", "deadline"]}
+        fields={[
+          "reason.title",
+          {
+            key: "deadline",
+            red(reason) {
+              return new Date() > new Date(reason.deadline);
+            },
+          },
+        ]}
         showHandler={setReason2Show}
       />
 

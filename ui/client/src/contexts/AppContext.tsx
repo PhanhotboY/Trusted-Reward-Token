@@ -85,35 +85,35 @@ export default function AppProvider({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     if (user) {
-      const fetchMembers = async () => {
-        const res = await getMembers();
-        setMembers(res.metadata);
-      };
-
-      const fetchRequests = async () => {
-        if (!user?.role || !(user?.role === USER.ROLE.EMPLOYEE)) {
-          const res = await (user?.role === USER.ROLE.ADMIN ? getRequests() : getMyRequests());
-          setRequests(res.metadata);
-        }
-      };
-
-      const fetchReasons = async () => {
-        const res = await getReasons();
-        setReasons(res.metadata);
-      };
-
-      const fetchSwags = async () => {
-        const res = await getSwags();
-        setSwags(res.metadata);
-      };
-
       try {
+        const fetchMembers = async () => {
+          const res = await getMembers();
+          setMembers(res.metadata);
+        };
+
+        const fetchRequests = async () => {
+          if (!user?.role || !(user?.role === USER.ROLE.EMPLOYEE)) {
+            const res = await (user?.role === USER.ROLE.ADMIN ? getRequests() : getMyRequests());
+            setRequests(res.metadata);
+          }
+        };
+
+        const fetchReasons = async () => {
+          const res = await getReasons();
+          setReasons(res.metadata);
+        };
+
+        const fetchSwags = async () => {
+          const res = await getSwags();
+          setSwags(res.metadata);
+        };
+
         fetchMembers();
         fetchRequests();
         fetchReasons();
         fetchSwags();
       } catch (e) {
-        console.log(e);
+        console.log("Error fetching data: ", e);
       }
     }
   }, [user]);

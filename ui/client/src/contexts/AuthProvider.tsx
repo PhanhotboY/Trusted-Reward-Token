@@ -40,7 +40,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     setLocalItem("user", JSON.stringify(user));
   }
 
-  async function logout() {
+  function logout() {
     setUser(null);
     setRefreshToken(null);
     setAccessToken(null);
@@ -49,23 +49,26 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     removeLocalItem("user");
   }
 
-  if (accessToken && refreshToken) {
-    isExpired(accessToken) && logout();
-
-    if (!user?.role) {
-      try {
-        const res = use(getCurrUser());
-        login(res.metadata, refreshToken, accessToken);
-      } catch (error) {
-        console.log("logging out with error: ", error);
-        logout();
-      }
-    }
-  }
-
   useEffect(() => {
-    isExpired(accessToken || "") && logout();
-  });
+    if (isExpired(accessToken || "")) {
+      return logout();
+    }
+
+    if (accessToken && refreshToken) {
+      const loginUser = async () => {
+        try {
+          const res = await getCurrUser();
+
+          if (res.status === 401) throw new Error(res.message || "User not found");
+          if (res.status <= 399) login(res.metadata, refreshToken, accessToken);
+        } catch (error) {
+          console.log("logging out with error: ", error);
+          logout();
+        }
+      };
+      loginUser();
+    }
+  }, [accessToken, refreshToken]);
 
   return (
     <AuthContext.Provider value={{ refreshToken, accessToken, login, logout }}>

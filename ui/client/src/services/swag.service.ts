@@ -1,3 +1,4 @@
+import { useUser } from "../contexts";
 import { ISwag } from "../interfaces/swag.interface";
 import { IUserDetails } from "../interfaces/user.interface";
 import fetcher from "./api";

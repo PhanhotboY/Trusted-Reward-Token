@@ -30,7 +30,15 @@ export default function RequestPage() {
 
       <List<IRequest>
         data={requests}
-        fields={["swag.name||reason.title", "type", "status"]}
+        fields={[
+          "swag.name||reason.title",
+          "type",
+          {
+            key: "status",
+            red: (item) => item.status === "rejected",
+            green: (item) => item.status === "approved",
+          },
+        ]}
         showHandler={setRequest2Show}
       />
 

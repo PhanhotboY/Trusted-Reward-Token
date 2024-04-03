@@ -10,6 +10,7 @@ import { ConfirmPopup, ViewPopup, AddPopup } from "@/src/components/popup";
 import { createReason, deleteReason, getReasons } from "@/src/services/reason.service";
 import { useReason } from "@/src/contexts/AppContext";
 import { IReason } from "@/src/interfaces/reason.interface";
+import { durationStringToSeconds, secondsToDurationString } from "@/src/utils";
 
 export default function ReasonAdminPage() {
   const [reason2Show, setReason2Show] = useState<any | null>(null);
@@ -21,11 +22,17 @@ export default function ReasonAdminPage() {
   const [title, setTitle] = useState<string>("");
   const [value, setValue] = useState<number>(0);
   const [description, setDescription] = useState<string>("");
+  const [duration, setDuration] = useState<string>("");
 
   const { reasons, setReasons } = useReason();
 
-  const data = { title, value, description };
-  const setData = { title: setTitle, value: setValue, description: setDescription };
+  const data = { title, value, description, duration };
+  const setData = {
+    title: setTitle,
+    value: setValue,
+    description: setDescription,
+    duration: setDuration,
+  };
 
   return (
     <div className="page-container">
@@ -52,8 +59,8 @@ export default function ReasonAdminPage() {
       {reason2Show && (
         <ViewPopup
           title="Reason Detail"
-          data={reason2Show}
-          fields={["id", "value", "title", "description"]}
+          data={{ ...reason2Show, duration: secondsToDurationString(reason2Show.duration) }}
+          fields={["title", "value", "duration", "description"]}
           closeHandler={() => {
             setReason2Show(null);
           }}
@@ -69,20 +76,24 @@ export default function ReasonAdminPage() {
           actionHandler={async (data) => {
             setIsAddReason(false);
             try {
-              await toast.promise(createReason(data), {
-                pending: "Adding reason...",
-                success: "Reason added",
-                error: {
-                  render({ data }: { data: Error }) {
-                    return data.message;
+              await toast.promise(
+                createReason({ ...data, duration: durationStringToSeconds(data.duration) }),
+                {
+                  pending: "Adding reason...",
+                  success: "Reason added",
+                  error: {
+                    render({ data }: { data: Error }) {
+                      return data.message;
+                    },
                   },
-                },
-              });
+                }
+              );
               const { metadata: reasons } = await getReasons();
               setReasons(reasons);
               setTitle("");
               setValue(0);
               setDescription("");
+              setDuration("");
             } catch (e) {
               console.log(e);
             }
