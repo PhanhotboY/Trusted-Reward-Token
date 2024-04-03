@@ -14,7 +14,7 @@ const logout = async () => {
 };
 
 const getCurrUser = async () => {
-  return fetcher.get<IUserDetails>("/users/me");
+  return await fetcher.get<IUserDetails>("/users/me");
 };
 
 export { login, register, logout, getCurrUser };

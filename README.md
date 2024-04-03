@@ -2,6 +2,55 @@
 
 <p align='center'><i>Inspired by <a href='https://github.com/EntEthAlliance/EEA-Trusted-Reward-Token'>EEA-Trusted-Reward-Token</a></i></p>
 
+## Workflow
+
+![image](https://github.com/PhanhotboY/Trusted-Reward-Token/assets/97371895/ee1861b3-74db-4e38-a77d-603e8967192a)
+
+## Role-Based Access Control
+
+### Admin:
+- Register
+- Login / Logout
+- Register member
+- Delete Member
+- Create reasons
+- Delete reasons
+- Create swags
+- Delete swags
+- Handle requests
+- See request list
+- See reason list
+- See swag list
+- See member list
+- See member’s employee list
+
+### Member:
+- Login / Logout
+- Register employees
+- Delete employees
+- Redeem swags
+- Subscribe reasons
+- Unsubscribe reason
+- Commit subscriptions
+- Withdraw requests
+- See request list
+- See reason list
+- See subscription list
+- See swag list
+- See employee list
+- See member list
+- See another member’s employee list
+- See balance
+
+### Employee:
+- Login / Logout
+- See balance
+- See reason list
+- See swag list
+- See employee list
+- See member list
+- See another member’s employee list
+
 ## Tasks
 
 - [x] Reading the [project documentation](https://github.com/EntEthAlliance/EEA-Trusted-Reward-Token#readme)
@@ -30,20 +79,6 @@
 
 - [x] Token Operator
 
-- [ ] Worker Registry
+- [x] Backend
 
-- [ ] Work Order Registry
-
-- [ ] Trusted Execution Environment(TEE)
-
-- [ ] Backend
-
-  - Database models
-
-  - Authentication
-
-  - Services
-
-    -
-
-- [ ] Frontend
+- [x] Frontend

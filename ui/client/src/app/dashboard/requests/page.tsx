@@ -42,7 +42,16 @@ export default function RequestAdminPage() {
 
       <List<IRequest>
         data={requests}
-        fields={["requester.organization.name:member", "type", "status", "completedAt:completed"]}
+        fields={[
+          "requester.organization.name:member",
+          "type",
+          {
+            key: "status",
+            red: (req) => req.status === "rejected",
+            green: (req) => req.status === "approved",
+          },
+          "completedAt:completed",
+        ]}
         showHandler={setRequest2Show}
       />
 
@@ -60,7 +69,7 @@ export default function RequestAdminPage() {
             "message",
           ]}
           closeHandler={setRequest2Show}
-          actionText={["Reject:red", "Approve"]}
+          actionText={request2Show.status !== "pending" ? undefined : ["Reject:red", "Approve"]}
           actionHandler={[async () => setIsConfirm("reject"), async () => setIsConfirm("approve")]}
         />
       )}

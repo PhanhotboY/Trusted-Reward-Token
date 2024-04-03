@@ -99,6 +99,66 @@ const isDate = (str: string | undefined | null) => {
   return (!!y && +M <= 12 && +d <= 31 && +h <= 24 && +m <= 60 && +s <= 60);
 }
 
+function durationStringToSeconds(durationString: string) {
+  // Regular expression to match each part of the duration string
+  const regex = /(\d+)(mo|w|d|h|mi|s)?/g;
+
+  // Object to store the conversion factors for each time unit to seconds
+  const conversionFactors = {
+    mo: 2592000, // 1 month is approx. 30.44 days
+    w: 604800,   // 1 week is 7 days
+    d: 86400,    // 1 day is 24 hours
+    h: 3600,     // 1 hour is 60 minutes
+    mi: 60,      // 1 minute is 60 seconds
+    s: 1         // 1 second is 1 second
+  };
+
+  let totalSeconds = 0;
+
+  // Iterate over each match in the duration string
+  let match;
+  while ((match = regex.exec(durationString)) !== null) {
+    const value = parseInt(match[1], 10); // Extract the numeric value
+    const unit = match[2]; // Extract the time unit (mo, w, d, h, mi, s)
+
+    // Convert the value to seconds and add it to the total
+    totalSeconds += value * (conversionFactors[unit as keyof typeof conversionFactors] || 1);
+  }
+
+  return totalSeconds;
+}
+
+function secondsToDurationString(seconds: number | string) {
+  const conversionFactors = {
+    months: 2592000, // 1 month is approx. 30.44 days
+    weeks: 604800, // 1 week is 7 days
+    days: 86400, // 1 day is 24 hours
+    hours: 3600, // 1 hour is 60 minutes
+    minutes: 60, // 1 minute is 60 seconds
+    seconds: 1, // 1 second is 1 second
+  };
+
+  let remainingSeconds = +seconds;
+  const durationParts = [];
+
+  for (const unit of Object.keys(conversionFactors) as Array<keyof typeof conversionFactors>) {
+    const factor = conversionFactors[unit];
+    if (factor) {
+      // Calculate the number of units and the remaining seconds
+      const unitCount = Math.floor(remainingSeconds / factor);
+      remainingSeconds %= factor;
+
+      // If the unit count is greater than zero, add it to the duration string
+      if (unitCount > 0) {
+        durationParts.push(unitCount + ' ' + capitalizeFirstLetter(unit));
+      }
+    }
+  }
+
+  // Join the duration parts into a string and return
+  return durationParts.join(" ");
+}
+
 export {
   isNullish,
   removeNestedNullish,
@@ -110,5 +170,7 @@ export {
   removeLocalItem,
   getDisplayAlias,
   getDisplayValue,
-  isDate
+  isDate,
+  durationStringToSeconds,
+  secondsToDurationString
 };

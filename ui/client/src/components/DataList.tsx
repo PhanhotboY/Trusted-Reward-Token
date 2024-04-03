@@ -9,7 +9,9 @@ export default function DataList<T extends { [key: string]: any }>({
   selected2Delete,
   selectHandler,
 }: {
-  fields: Array<Paths<T>>;
+  fields: Array<
+    Paths<T> | { key: Paths<T>; red?: (item: T) => boolean; green?: (item: T) => boolean }
+  >;
   data: Array<T>;
   deletable?: boolean;
   showHandler: (item: T) => void;
@@ -38,24 +40,28 @@ export default function DataList<T extends { [key: string]: any }>({
             onClick={() => showHandler && showHandler(item)}
           >
             {fields.map((field, i) => {
-              if (typeof getDisplayValue(data[0], field) === "undefined") return null;
+              const key = typeof field === "object" ? field.key : field;
+              if (typeof getDisplayValue(data[0], key) === "undefined") return null;
 
-              const value = getDisplayValue(item, field);
+              const value = getDisplayValue(item, key);
+
+              const color =
+                typeof field === "object"
+                  ? field.red && field.red(item)
+                    ? "text-red-600"
+                    : field.green && field.green(item)
+                    ? "text-green-600"
+                    : ""
+                  : "";
 
               return (
                 <span
                   className={
-                    "truncate " +
-                    (i ? "w-[12%] text-center" : "p-2 grow text-start") +
-                    (value === "approved"
-                      ? " text-green-500"
-                      : value === "rejected"
-                      ? " text-red-500"
-                      : "")
+                    "truncate " + (i ? "w-[12%] text-center " : "p-2 grow text-start ") + color
                   }
                   key={i}
                 >
-                  {isDate(value) ? new Date(value).toLocaleDateString() : value || "-"}
+                  {isDate(value) ? getDisplayDateTime(value) : value || "-"}
                 </span>
               );
             })}
@@ -69,3 +75,10 @@ export default function DataList<T extends { [key: string]: any }>({
     </div>
   );
 }
+
+const getDisplayDateTime = (date: string) => {
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return date;
+  if (new Date().toDateString() === d.toDateString()) return d.toLocaleTimeString();
+  return d.toDateString();
+};
