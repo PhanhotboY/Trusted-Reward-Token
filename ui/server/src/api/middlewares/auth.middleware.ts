@@ -67,11 +67,22 @@ async function authentication(req: Request, res: Response, next: NextFunction) {
     }
 
     req.user = user;
+
+    if (user.isExpired && refreshToken) {
+      req.refreshToken = refreshToken;
+      await refreshTokenService(user, keyToken, refreshToken);
+      const newKeyToken = await findKeyTokenByUserId(user.userId);
+      if (!newKeyToken) throw new InternalServerError("Something went wrong. Please login again!");
+
+      req.keyToken = newKeyToken;
+
+      return next();
+    }
   } else if (refreshToken) {
     const user = verifyToken<IUserJWTPayload>(refreshToken, keyToken.publicKey);
 
     if (user.userId !== clientId) {
-      throw new BadRequestError("Invalid token!");
+      throw new UnauthorizedError("Invalid token!");
     }
 
     req.refreshToken = refreshToken;

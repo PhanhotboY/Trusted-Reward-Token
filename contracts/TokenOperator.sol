@@ -168,12 +168,25 @@ contract TokenOperator is Ownable {
         uint256 amount,
         bytes memory operatorData
     ) internal {
-        penaltyToken.operatorMint(organization, amount, "", operatorData);
-
         // Reduce user reputation balance
         uint256 reputationValue = reputationToken.balanceOf(account);
         uint256 penaltyReputation = reputationValue < amount ? reputationValue : amount;
         reputationToken.operatorBurn(account, penaltyReputation, "", operatorData);
+
+        uint256 rewardBalance = rewardToken.balanceOf(organization);
+
+        if (rewardBalance > 0) {
+            uint256 rewardPenalty = rewardBalance < amount ? rewardBalance : amount;
+            rewardToken.operatorBurn(organization, rewardPenalty, "", operatorData);
+
+            emit RewardsBurned(organization, rewardPenalty, operatorData);
+        }
+        if (amount > rewardBalance) {
+            uint256 penaltyAmount = amount - rewardBalance;
+            penaltyToken.operatorMint(organization, penaltyAmount, "", operatorData);
+            emit PenaltiesMinted(organization, penaltyAmount, operatorData);
+        }
+        penaltyToken.operatorMint(organization, amount, "", operatorData);
 
         // Reduce org reputation balance
         uint256 orgReputationValue = reputationToken.balanceOf(organization);
@@ -181,9 +194,8 @@ contract TokenOperator is Ownable {
         reputationToken.operatorBurn(organization, orgPenaltyReputation, "", operatorData);
 
         // Emit events
-        emit PenaltiesMinted(organization, amount, operatorData);
-        emit ReputationBurned(organization, amount, operatorData);
-        emit ReputationBurned(account, amount, operatorData);
+        emit ReputationBurned(organization, orgPenaltyReputation, operatorData);
+        emit ReputationBurned(account, penaltyReputation, operatorData);
     }
 
     function mintRewards(
@@ -196,10 +208,22 @@ contract TokenOperator is Ownable {
         reputationToken.operatorMint(account, amount, "", operatorData);
 
         // Increase org reputation & reward balance
-        rewardToken.operatorMint(organization, amount, "", operatorData);
+        uint256 penaltyBalance = penaltyToken.balanceOf(organization);
+
+        if (penaltyBalance > 0) {
+            uint256 penaltyReward = penaltyBalance < amount ? penaltyBalance : amount;
+            penaltyToken.operatorBurn(organization, penaltyReward, "", operatorData);
+
+            emit PenaltiesBurned(organization, penaltyReward, operatorData);
+        }
+        if (amount > penaltyBalance) {
+            uint256 rewardAmount = amount - penaltyBalance;
+            rewardToken.operatorMint(organization, rewardAmount, "", operatorData);
+            emit RewardsMinted(organization, rewardAmount, operatorData);
+        }
+
         reputationToken.operatorMint(organization, amount, "", operatorData);
 
-        emit RewardsMinted(organization, amount, operatorData);
         emit ReputationMinted(organization, amount, operatorData);
         emit ReputationMinted(account, amount, operatorData);
     }
