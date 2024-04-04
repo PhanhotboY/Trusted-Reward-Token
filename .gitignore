@@ -13,3 +13,4 @@ deployments
 .vscode
 yarn-error.log
 yarn.lock
+local/ui/.env.server

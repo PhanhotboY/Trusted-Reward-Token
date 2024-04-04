@@ -1,21 +1,40 @@
-title,value,description
-Weekly Team Meeting,100,"Regular team meeting to discuss project updates, goals, and challenges"
-Quarterly Performance Review,300,"Individual performance review sessions between employees and managers"
-Annual Strategy Planning Session,500,"Strategic planning session to set goals and priorities for the upcoming year"
-Employee Training Workshop,200,"Training workshop to enhance skills and knowledge relevant to job roles"
-Client Presentation,400,"Presentation to showcase products, services, or project progress to clients"
-Company Retreat,1000,"Annual company retreat for team-building activities and strategic discussions"
-Project Kickoff Meeting,150,"Meeting to officially launch a new project, define objectives, and assign tasks"
-Brainstorming Session,150,"Collaborative session to generate creative ideas and solutions for specific challenges"
-Team Building Activity,100,"Activity designed to foster teamwork, communication, and camaraderie among employees"
-Departmental Town Hall,250,"Town hall meeting to update employees on departmental initiatives and address questions"
-Product Launch Event,600,"Event to introduce a new product or service to the market, including demonstrations and presentations"
-Cross-Functional Collaboration Meeting,200,"Meeting involving members from different departments to coordinate efforts on a shared project"
-Employee Recognition Ceremony,300,"Ceremony to recognize and celebrate outstanding employee achievements and contributions"
-Customer Feedback Session,200,"Session to gather feedback from customers and clients to improve products or services"
-Company-wide Training Day,400,"Day-long training sessions covering various topics relevant to all employees"
-Annual General Meeting (AGM),500,"Yearly meeting for shareholders, executives, and stakeholders to discuss company performance and future plans"
-Workplace Wellness Program Launch,300,"Launch event for implementing a workplace wellness program to promote employee health and well-being"
-Project Review and Retrospective,250,"Review meeting to assess project outcomes, identify lessons learned, and plan for improvements"
-Employee Volunteer Day,100,"Day dedicated to employee volunteering activities to support local communities or charities"
-Virtual Team Building Game Night,100,"Online game night event for remote teams to bond and have fun together"
+title,value,description,duration
+Weekly Team Meeting,100,"Regular team meeting to discuss project updates, goals, and challenges",3600
+Quarterly Performance Review,300,"Individual performance review sessions between employees and managers",7200
+Annual Strategy Planning Session,500,"Strategic planning session to set goals and priorities for the upcoming year",21600
+Employee Training Workshop,200,"Training workshop to enhance skills and knowledge relevant to job roles",14400
+Client Presentation,400,"Presentation to showcase products, services, or project progress to clients",5400
+Company Retreat,1000,"Annual company retreat for team-building activities and strategic discussions",86400
+Project Kickoff Meeting,150,"Meeting to officially launch a new project, define objectives, and assign tasks",5400
+Brainstorming Session,150,"Collaborative session to generate creative ideas and solutions for specific challenges",3600
+Team Building Activity,100,"Activity designed to foster teamwork, communication, and camaraderie among employees",7200
+Departmental Town Hall,250,"Town hall meeting to update employees on departmental initiatives and address questions",7200
+Product Launch Event,600,"Event to introduce a new product or service to the market, including demonstrations and presentations",14400
+Cross-Functional Collaboration Meeting,200,"Meeting involving members from different departments to coordinate efforts on a shared project",5400
+Employee Recognition Ceremony,300,"Ceremony to recognize and celebrate outstanding employee achievements and contributions",3600
+Customer Feedback Session,200,"Session to gather feedback from customers and clients to improve products or services",3600
+Company-wide Training Day,400,"Day-long training sessions covering various topics relevant to all employees",28800
+Annual General Meeting (AGM),500,"Yearly meeting for shareholders, executives, and stakeholders to discuss company performance and future plans",43200
+Workplace Wellness Program Launch,300,"Launch event for implementing a workplace wellness program to promote employee health and well-being",14400
+Project Review and Retrospective,250,"Review meeting to assess project outcomes, identify lessons learned, and plan for improvements",7200
+Employee Volunteer Day,100,"Day dedicated to employee volunteering activities to support local communities or charities",28800
+Virtual Team Building Game Night,100,"Online game night event for remote teams to bond and have fun together",3600
+Long-Term Project Development,3000,"Ongoing project development spanning several months, involving multiple phases and milestones",15552000
+Annual Strategic Planning and Review,4500,"Comprehensive strategic planning and review process conducted annually to set long-term goals and objectives",31536000
+Employee Skills Enhancement Program,2500,"Long-term program aimed at enhancing employee skills and knowledge through continuous learning and development activities",25920000
+Company Rebranding and Marketing Campaign,4000,"Extensive rebranding and marketing campaign spanning several months to redefine brand identity and market positioning",20736000
+Research and Development Initiative,3500,"Long-term research and development initiative focusing on innovation and product/service enhancement",17280000
+International Expansion Strategy,4800,"Strategic planning and execution for international expansion, including market research, partnerships, and regulatory compliance",26784000
+Large-scale Event Planning and Execution,4200,"Planning and execution of a large-scale event (e.g., conference, trade show) requiring extensive preparation and coordination",20736000
+Corporate Sustainability Initiative,3800,"Long-term initiative focused on corporate sustainability practices, including environmental, social, and governance (ESG) efforts",23328000
+Strategic Partnership Development,3200,"Efforts to identify, negotiate, and establish strategic partnerships with key industry players, spanning several months",18144000
+Product Development and Launch Cycle,2800,"End-to-end product development and launch cycle, including ideation, prototyping, testing, and market launch, over several months",15552000
+Customer Relationship Management Overhaul,3100,"Comprehensive overhaul of customer relationship management systems and processes to improve customer engagement and satisfaction",20736000
+Market Research and Analysis Project,2700,"In-depth market research and analysis project spanning several months to identify market trends, opportunities, and threats",13824000
+Supply Chain Optimization Initiative,3400,"Long-term initiative to optimize supply chain processes, reduce costs, and improve efficiency and reliability",20736000
+Digital Transformation Strategy Implementation,4700,"Implementation of a comprehensive digital transformation strategy to modernize business operations and enhance digital capabilities",24192000
+Talent Acquisition and Retention Program,2900,"Long-term program focused on talent acquisition, recruitment, and retention strategies to attract and retain top talent",15552000
+Regulatory Compliance and Governance Review,3300,"Thorough review and enhancement of regulatory compliance and governance practices to ensure legal and ethical standards are met",20736000
+Customer Experience Enhancement Project,3600,"Project aimed at enhancing the overall customer experience through improvements in products, services, and processes over an extended period",18144000
+Innovation and Idea Incubation Program,3000,"Program to foster innovation and incubate new ideas within the organization, providing resources and support over several months",15552000
+Strategic Investment Portfolio Management,4600,"Management and optimization of a strategic investment portfolio over an extended period to maximize returns and minimize risks",23328000

@@ -19,6 +19,7 @@ export class ReasonModel extends Model<
   declare title: string;
   declare description: CreationOptional<string>;
   declare value: number;
+  declare duration: number;
 
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
@@ -41,6 +42,11 @@ ReasonModel.init(
     value: {
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    duration: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,

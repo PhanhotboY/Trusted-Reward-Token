@@ -10,7 +10,9 @@ export default function List<T extends { [key: string]: any }>({
   selectHandler,
   deleteHandler,
 }: {
-  fields: Array<Paths<T>>;
+  fields: Array<
+    Paths<T> | { key: Paths<T>; red?: (item: T) => boolean; green?: (item: T) => boolean }
+  >;
   data: T[];
   deletable?: boolean;
   showHandler: (item: T) => void;
@@ -33,7 +35,8 @@ export default function List<T extends { [key: string]: any }>({
 
           <div className="w-full flex items-center justify-between hover:cursor-pointer">
             {fields.map((field, index) => {
-              if (typeof getDisplayValue(data[0], field) === "undefined") return null;
+              const key = typeof field === "object" ? field.key : field;
+              if (typeof getDisplayValue(data[0], key) === "undefined") return null;
 
               return (
                 <button
@@ -44,7 +47,7 @@ export default function List<T extends { [key: string]: any }>({
                     (index === fields.length - 1 ? "rounded-tr-md" : "")
                   }
                 >
-                  {getDisplayAlias(field)} ▾{/* ▴ */}
+                  {getDisplayAlias(key)} ▾{/* ▴ */}
                 </button>
               );
             })}

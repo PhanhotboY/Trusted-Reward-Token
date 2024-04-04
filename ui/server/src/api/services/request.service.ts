@@ -12,6 +12,8 @@ import {
   getRewardBalanceOf,
   syncBalanceForOrg,
   syncBalance,
+  mintPenaltyToken,
+  mintPenaltyTokenForMember,
 } from "../services";
 import { REQUEST } from "../constants";
 import { getReasonById, getReasonSubscription, uncommitReason } from "./reason.service";
@@ -209,19 +211,34 @@ async function processGrantingRequest(requestId: string, options?: IHandlerOptio
     []
   );
 
-  const mintResult = await mintRewardTokenForMember(
-    memberWallet.address,
-    employeeAddresses,
-    reason.value
-  );
+  const overTime = Date.now() - reasonSubscription.deadline.getTime();
+  // 50% of the duration
+  const threshold = (reason.duration || 1) * 1000 / 2;
+  // reduce 10% for each 10% of the duration
+  const percentage = Math.ceil(overTime / threshold * 10) / 10;
 
-  console.log("mint log: ", mintResult?.logs[0]);
+  if (overTime > threshold) {
+    // mint penalty token for each 10% of the duration over the threshold
+    console.log('penalty tokens: ', Math.round(reason.value * (percentage - 1)));
+    await mintPenaltyTokenForMember(
+      memberWallet.address,
+      employeeAddresses,
+      Math.round(reason.value * (percentage - 1))
+    )
+  } else {
+    // if not over time, mint full reward token
+    // else reduce reward token for each 10% of the duration before the threshold
+    console.log('reward tokens: ', reason.value * (overTime > 0 ? (1 - percentage) : 1));
+    const mintResult = await mintRewardTokenForMember(
+      memberWallet.address,
+      employeeAddresses,
+      reason.value * (overTime > 0 ? (1 - percentage) : 1)
+    )
+    console.log("mint log: ", mintResult?.logs[0]);
+  }
 
   const balanceAfter = await getFullBalanceOf(memberWallet.address);
   console.log("balanceAfter", balanceAfter);
-
-  const rewardAfter = await getRewardBalanceOf(memberWallet.address);
-  console.log("reward token balance: ", rewardAfter);
 
   await syncBalanceForOrg(member.orgId!);
 

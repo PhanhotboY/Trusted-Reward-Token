@@ -31,6 +31,7 @@ export default function AddPopup({
 
   const onChangeHandler = (field: string) => (e: FormEvent<HTMLInputElement>) => {
     errorSetter[field as keyof typeof error]?.("");
+    console.log("field: ", e.currentTarget.value);
     dataSetter[field](e.currentTarget.value);
   };
 
@@ -68,7 +69,12 @@ export default function AddPopup({
               id={field}
               className="w-full p-2 border rounded-md"
               value={data[field]}
-              type={field === "value" ? "number" : field === "password" ? "password" : "text"}
+              type={getType(field)}
+              pattern={
+                field === "duration"
+                  ? "^(?:(\\d+mo))?(\\d+w)?(\\d+d)?(\\d+h)?(\\d+mi)?(\\d+s)?$"
+                  : undefined
+              }
               onChange={(e) => onChangeHandler(field)(e)}
             />
 
@@ -81,3 +87,14 @@ export default function AddPopup({
     </BasePopup>
   );
 }
+
+const getType = (field: string) => {
+  switch (field) {
+    case "value":
+      return "number";
+    case "password":
+      return "password";
+    default:
+      return "text";
+  }
+};

@@ -50,16 +50,25 @@ export const subscribeReason = async (memberId: string, reasonId: string) => {
   const subscription = await ReasonRepo.getReasonSubscription(memberId, reasonId);
   if (subscription) throw new BadRequestError("Reason already subscribed!");
 
+  const reason = await getReasonById(reasonId);
   const newSubscription = await ReasonRepo.subscribeReason({
     userId: memberId,
     reasonId,
-    deadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+    deadline: new Date(Date.now() + reason.duration * 1000),
   });
 
   return getReturnData(newSubscription);
 };
 
 export const unsubscribeReason = async (memberId: string, reasonId: string) => {
+  const subscription = await getReasonSubscription(memberId, reasonId);
+  if (!subscription) throw new BadRequestError("Reason not subscribed!")
+  if (subscription.isCommitted) throw new BadRequestError("Reason already committed!");
+
+
+  if (Date.now() > subscription.createdAt.getTime() + subscription.reason.duration * 1000 / 10)
+    throw new BadRequestError("Cannot unsubscribe after 10% of the duration!");
+
   return await ReasonRepo.unsubscribeReason(memberId, reasonId);
 };
 
